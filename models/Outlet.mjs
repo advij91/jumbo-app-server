@@ -19,7 +19,7 @@ const outletSchema = new mongoose.Schema({
     trim: true,
   },
   pin: {
-    type: Number,
+    type: String,
     required: true, // 6-digit PIN validation
     validate: {
       validator: function (v) {

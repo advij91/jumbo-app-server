@@ -15,13 +15,13 @@ const itemSchema = new mongoose.Schema({
     trim: true,
   },
   ingrediants: {
-    type: String,
+    type: [String],
     required: true, // Makes the ingrediants field required
     trim: true,
   },
   isVeg: {
     type: Boolean,
-    required: true, // Specifies that isVeg is mandatory
+    default: true, // Specifies that isVeg is mandatory
   },
   imageUrl: {
     type: String,
@@ -37,6 +37,16 @@ const itemSchema = new mongoose.Schema({
     type: [String], // Array of strings
     enum: ["bestseller", "new"], // Validates allowed values
     default: undefined, // Makes labels optional
+  },
+  price: {
+    type: Number,
+    required: true, // Makes the price field required
+    min: 0, // Ensures price is non-negative
+  },
+  isAvailableAt: {
+    type: [mongoose.Schema.Types.ObjectId], // Array of ObjectIds
+    ref: 'Outlet', // Reference to the Outlet model
+    default: []
   },
   createdAt: {
     type: Date,

@@ -1,10 +1,5 @@
 import Outlet from "../models/Outlet.mjs"; // Import the Outlet model
 
-/**
- * Get all outlets
- * @param {Object} req - Request object
- * @param {Object} res - Response object
- */
 export const getOutlets = async (req, res) => {
   try {
     // Retrieve all outlets from the database
@@ -16,11 +11,24 @@ export const getOutlets = async (req, res) => {
   }
 };
 
-/**
- * Add a new outlet
- * @param {Object} req - Request object containing outlet data
- * @param {Object} res - Response object
- */
+export const getOutletById = async (req, res) => {
+  try {
+    const { id } = req.params; // Get outlet ID from request parameters
+
+    // Find outlet by ID
+    const outlet = await Outlet.findById(id);
+
+    if (!outlet) {
+      return res.status(404).json({ message: "Outlet not found" });
+    }
+
+    return res.status(200).json(outlet);
+  } catch (error) {
+    console.error("Error fetching outlet:", error);
+    return res.status(500).json({ message: "Error fetching outlet", error });
+  }
+};
+
 export const addOutlet = async (req, res) => {
   try {
     const { name, address, city, pin, contact, alternateContact, socialMedia } = req.body;
@@ -45,11 +53,6 @@ export const addOutlet = async (req, res) => {
   }
 };
 
-/**
- * Update an existing outlet
- * @param {Object} req - Request object containing outlet ID and updated data
- * @param {Object} res - Response object
- */
 export const updateOutlet = async (req, res) => {
   try {
     const { id } = req.params; // Get outlet ID from request parameters
@@ -69,11 +72,6 @@ export const updateOutlet = async (req, res) => {
   }
 };
 
-/**
- * Delete an outlet
- * @param {Object} req - Request object containing outlet ID
- * @param {Object} res - Response object
- */
 export const deleteOutlet = async (req, res) => {
   try {
     const { id } = req.params; // Get outlet ID from request parameters
