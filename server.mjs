@@ -1,4 +1,6 @@
 import express from "express";
+import https from "https";
+import fs from "fs";
 // import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
@@ -21,6 +23,11 @@ import itemUploadRoutes from "./routes/itemUploadRoutes.mjs"
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+const sslOptions = {
+    key: fs.readFileSync(process.env.SSL_KEY_PATH),
+    cert: fs.readFileSync(process.env.SSL_CERT_PATH),
+}
+
 app.use(cookieParser())
 app.use(cors({
     origin: 'https://jumbo-app-client-4a76.vercel.app',
@@ -41,4 +48,4 @@ app.use("/api", itemUploadRoutes);
 // Serve static files from the uploads folder
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-app.listen(PORT, () => console.log(`Express server is running on ${PORT}`));
+https.createServer(sslOptions, app).listen(PORT, '0.0.0.0', () => console.log(`Express server is running on ${PORT}`));

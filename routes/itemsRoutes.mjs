@@ -1,6 +1,6 @@
 import express from "express"
 
-import { createItems, getItems, updateItemById, deleteItemById} from "../controllers/itemsController.mjs"
+import { createItems, getItems, updateItemById, deleteItemById} from "../controllers/ItemsController.mjs"
 
 const router = express.Router();
 
