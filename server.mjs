@@ -22,7 +22,11 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 app.use(cookieParser())
-app.use(cors());
+app.use(cors({
+    origin: 'https://jumbo-app-client-4a76.vercel.app',
+    methods: ['GET', 'POST', 'PATCH', 'DELETE'],
+    credentials: true, // Allow credentials to be sent with requests
+}));
 app.use(express.json());
 
 app.use("/auth", usersRoutes)
