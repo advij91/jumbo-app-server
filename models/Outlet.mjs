@@ -18,6 +18,11 @@ const outletSchema = new mongoose.Schema({
     required: true, // Mandatory field
     trim: true,
   },
+  state: {
+    type: String,
+    required: true, // Mandatory field
+    trim: true,
+  },
   pin: {
     type: String,
     required: true, // 6-digit PIN validation

@@ -31,13 +31,14 @@ export const getOutletById = async (req, res) => {
 
 export const addOutlet = async (req, res) => {
   try {
-    const { name, address, city, pin, contact, alternateContact, socialMedia } = req.body;
+    const { name, address, city, state, pin, contact, alternateContact, socialMedia } = req.body;
 
     // Create a new outlet document
     const newOutlet = new Outlet({
       name,
       address,
       city,
+      state,
       pin,
       contact,
       alternateContact,

@@ -14,7 +14,7 @@ const itemSchema = new mongoose.Schema({
     required: true, // Makes the description field required
     trim: true,
   },
-  ingrediants: {
+  ingredients: {
     type: [String],
     required: true, // Makes the ingrediants field required
     trim: true,
@@ -31,29 +31,48 @@ const itemSchema = new mongoose.Schema({
   category: {
     type: String,
     required: true, // Makes the category field required
-    enum: ["burger", "pizza", "desert", "sides", "chinese", "shakes", "juices", "noodles"], // Validates allowed values
+    enum: [
+      "burger",
+      "pizza",
+      "desert",
+      "sides",
+      "chinese",
+      "shakes",
+      "juices",
+      "noodles",
+    ], // Validates allowed values
   },
   labels: {
     type: [String], // Array of strings
     enum: ["bestseller", "new"], // Validates allowed values
     default: undefined, // Makes labels optional
   },
-  price: {
-    type: Number,
-    required: true, // Makes the price field required
-    min: 0, // Ensures price is non-negative
-  },
-  isAvailableAt: {
-    type: [mongoose.Schema.Types.ObjectId], // Array of ObjectIds
-    ref: 'Outlet', // Reference to the Outlet model
-    default: []
-  },
   createdAt: {
     type: Date,
     default: Date.now, // Timestamp for creation
   },
+  outletDetails: [
+    new mongoose.Schema(
+      {
+        outletId: {
+          type: mongoose.Schema.Types.ObjectId, // ObjectId reference to Outlet
+          ref: "Outlet", // Reference to the Outlet model
+        },
+        price: {
+          type: Number,
+          required: true, // Makes the price field required
+          min: 0, // Ensures price is non-negative
+        },
+        isAvailable: {
+          type: Boolean, // Reference to the Outlet model
+          default: true,
+        },
+      },
+      { _id: false } // Disable _id generation for this subdocument
+    ),
+  ],
 });
 
-const Item = storeDB.model('Item', itemSchema);
+const Item = storeDB.model("Item", itemSchema);
 
-export default Item
+export default Item;

@@ -1,8 +1,8 @@
-import express from "express";
-import { createItem } from "../controllers/itemUploadController.mjs";
+// import express from "express";
+// import { createItem } from "../controllers/itemUploadController.mjs";
 
-const router = express.Router();
+// const router = express.Router();
 
-router.post("/item/upload", createItem);
+// router.post("/item/upload", createItem);
 
-export default router;
+// export default router;
