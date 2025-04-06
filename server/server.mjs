@@ -9,8 +9,8 @@ import path from "path";
 import { fileURLToPath } from "url";
 dotenv.config();
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// const __filename = fileURLToPath(import.meta.url);
+// const __dirname = path.dirname(__filename);
 
 import itemsRoutes from "./routes/itemsRoutes.mjs";
 import outletsRoutes from "./routes/outletsRoutes.mjs";
@@ -47,7 +47,7 @@ app.use("/api", customersRoutes);
 app.use("/api", usersRoutes);
 // app.use("/api", itemUploadRoutes);
 // Serve static files from the uploads folder
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+// app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // https.createServer(sslOptions, app).listen(PORT, '0.0.0.0', () => console.log(`Express server is running on ${PORT}`));
 app.listen(PORT, () => console.log(`Express server is running on ${PORT}`))
