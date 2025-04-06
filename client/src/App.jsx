@@ -11,6 +11,7 @@ function App() {
   return (
     <Router>
       <Routes>
+        <Route path="/" element={<Outlets />} />
         {/* Outlet routes */}
         <Route path="/outlets" element={<Outlets />} />
         <Route path="/outlets/add" element={<AddOutlet />} />
