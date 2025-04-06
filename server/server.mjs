@@ -48,6 +48,8 @@ app.use("/api", usersRoutes);
 // app.use("/api", itemUploadRoutes);
 // Serve static files from the uploads folder
 // app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+// server static file from client dist folder
+app.use(express.static(path.join(path.resolve(), "client", "dist")));
 
 // https.createServer(sslOptions, app).listen(PORT, '0.0.0.0', () => console.log(`Express server is running on ${PORT}`));
 app.listen(PORT, () => console.log(`Express server is running on ${PORT}`))
