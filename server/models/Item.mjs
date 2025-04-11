@@ -31,16 +31,6 @@ const itemSchema = new mongoose.Schema({
   category: {
     type: String,
     required: true, // Makes the category field required
-    enum: [
-      "burger",
-      "pizza",
-      "desert",
-      "sides",
-      "chinese",
-      "shakes",
-      "juices",
-      "noodles",
-    ], // Validates allowed values
   },
   labels: {
     type: [String], // Array of strings
