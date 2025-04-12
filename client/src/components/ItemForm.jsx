@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import { getOutlets } from "../../services/outletService";
+import { getCategories } from "../../services/categoriesService";
 
 const ItemForm = ({ item = {}, onSubmit }) => {
   const [formData, setFormData] = useState({
@@ -15,6 +16,7 @@ const ItemForm = ({ item = {}, onSubmit }) => {
   });
 
   const [ outlets, setOutlets ] = useState([]);
+  const [ categories, setCategories ] = useState([]);
 
   useEffect(() => {
     const fetchOutlets = async () => {
@@ -26,6 +28,19 @@ const ItemForm = ({ item = {}, onSubmit }) => {
         }
     };
     fetchOutlets();
+    }, []);
+
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const categoriesData = await getCategories();
+                categoriesData.sort((a, b) => a.category.localeCompare(b.category));
+                setCategories(categoriesData);
+            } catch (error) {
+                console.error("Error fetching categories:", error);
+            }
+        };
+        fetchCategories();
     }, []);
 
   const handleInputChange = (e) => {
@@ -166,14 +181,9 @@ const outletDetailData = outlets.map((outlet, index) => {
           required
         >
           <option value="">Select a category</option>
-          <option value="burger">Burger</option>
-          <option value="pizza">Pizza</option>
-          <option value="desert">Desert</option>
-          <option value="sides">Sides</option>
-          <option value="chinese">Chinese</option>
-          <option value="shakes">Shakes</option>
-          <option value="juices">Juices</option>
-          <option value="noodles">Noodles</option>
+          {categories.map((category) => (
+            <option key={category._id} value={category.category}>{category.category}</option>
+          ))}
         </select>
       </div>
       <div className="mb-4">
