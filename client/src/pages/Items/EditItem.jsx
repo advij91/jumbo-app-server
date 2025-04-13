@@ -1,7 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { getMenuItemById, updateMenuItem } from '../../../services/menuItemService';
-import ItemForm from '../../components/ItemForm';
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import {
+  getMenuItemById,
+  updateMenuItem,
+} from "../../../services/menuItemService";
+import ItemForm from "../../components/ItemForm";
+import Header from "../../components/Header";
 
 const EditItem = () => {
   const [item, setItem] = useState(null);
@@ -14,7 +18,7 @@ const EditItem = () => {
         const data = await getMenuItemById(id);
         setItem(data);
       } catch (error) {
-        console.error('Error fetching item:', error);
+        console.error("Error fetching item:", error);
       }
     };
 
@@ -24,19 +28,22 @@ const EditItem = () => {
   const handleSubmit = async (updatedItem) => {
     try {
       await updateMenuItem(id, updatedItem);
-      navigate('/items');
+      navigate("/items");
     } catch (error) {
-      console.error('Error updating item:', error);
+      console.error("Error updating item:", error);
     }
   };
 
   if (!item) return <p>Loading...</p>;
 
   return (
-    <div>
-      <h1 className="text-3xl font-bold mb-6">Edit Item</h1>
-      <ItemForm item={item} onSubmit={handleSubmit} />
-    </div>
+    <>
+      <Header />
+      <div>
+        <h1 className="text-3xl font-bold mb-6">Edit Item</h1>
+        <ItemForm item={item} onSubmit={handleSubmit} />
+      </div>
+    </>
   );
 };
 

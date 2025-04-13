@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
+import Header from "./components/Header"
 import Outlets from "./pages/Outlets/Outlets"
 import AddOutlet from "./pages/Outlets/AddOutlet"
 import EditOutlet from "./pages/Outlets/EditOutlet"
@@ -17,7 +18,7 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Outlets />} />
+        <Route path="/" element={<Header />} />
         {/* Outlet routes */}
         <Route path="/outlets" element={<Outlets />} />
         <Route path="/outlets/add" element={<AddOutlet />} />

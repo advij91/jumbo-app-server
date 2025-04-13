@@ -1,7 +1,11 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import CategoryForm from "../../components/CategoryForm";
-import { getCategoryById, updateCategory} from "../../../services/categoriesService";
+import {
+  getCategoryById,
+  updateCategory,
+} from "../../../services/categoriesService";
+import Header from "../../components/Header";
 
 export default function EditCategory() {
   const navigate = useNavigate();
@@ -24,13 +28,16 @@ export default function EditCategory() {
   };
 
   return (
-    <main className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-4">
-      <h1 className="text-3xl font-bold text-primary mb-6">Edit Category</h1>
-      {category ? (
-        <CategoryForm onSubmit={handleSubmit} initialData={category} />
-      ) : (
-        <p className="text-gray-600">Loading...</p>
-      )}
-    </main>
+    <>
+      <Header />
+      <main className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-4">
+        <h1 className="text-3xl font-bold text-primary mb-6">Edit Category</h1>
+        {category ? (
+          <CategoryForm onSubmit={handleSubmit} initialData={category} />
+        ) : (
+          <p className="text-gray-600">Loading...</p>
+        )}
+      </main>
+    </>
   );
 }

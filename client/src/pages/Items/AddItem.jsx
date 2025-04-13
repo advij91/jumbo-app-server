@@ -1,7 +1,10 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import ItemForm from '../../components/ItemForm';
-import { uploadMenuItem } from '../../../services/menuItemService';
+import React from "react";
+import { useNavigate } from "react-router-dom";
+
+import { uploadMenuItem } from "../../../services/menuItemService";
+
+import ItemForm from "../../components/ItemForm";
+import Header from "../../components/Header";
 
 const AddItem = () => {
   const navigate = useNavigate();
@@ -9,17 +12,20 @@ const AddItem = () => {
   const handleSubmit = async (newItem) => {
     try {
       await uploadMenuItem(newItem);
-      navigate('/items');
+      navigate("/items");
     } catch (error) {
-      console.error('Error creating item:', error);
+      console.error("Error creating item:", error);
     }
   };
 
   return (
-    <div>
-      <h1 className="text-3xl font-bold mb-6">Add New Item</h1>
-      <ItemForm onSubmit={handleSubmit} />
-    </div>
+    <>
+      <Header />
+      <div>
+        <h1 className="text-3xl font-bold mb-6">Add New Item</h1>
+        <ItemForm onSubmit={handleSubmit} />
+      </div>
+    </>
   );
 };
 

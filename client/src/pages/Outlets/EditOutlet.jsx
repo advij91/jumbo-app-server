@@ -1,8 +1,8 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import OutletForm from "../../components/OutletForm";
 import { getOutletById, updateOutlet } from "../../../services/outletService";
-// import { getOutletById, updateOutlet } from "../services/outletService";
+import OutletForm from "../../components/OutletForm";
+import Header from "../../components/Header";
 
 export default function EditOutlet() {
   const navigate = useNavigate();
@@ -25,13 +25,16 @@ export default function EditOutlet() {
   };
 
   return (
-    <main className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-4">
-      <h1 className="text-3xl font-bold text-primary mb-6">Edit Outlet</h1>
-      {outlet ? (
-        <OutletForm onSubmit={handleSubmit} initialData={outlet} />
-      ) : (
-        <p className="text-gray-600">Loading...</p>
-      )}
-    </main>
+    <>
+      <Header />
+      <main className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-4">
+        <h1 className="text-3xl font-bold text-primary mb-6">Edit Outlet</h1>
+        {outlet ? (
+          <OutletForm onSubmit={handleSubmit} initialData={outlet} />
+        ) : (
+          <p className="text-gray-600">Loading...</p>
+        )}
+      </main>
+    </>
   );
 }
