@@ -8,6 +8,9 @@ import EditItem from "./pages/Items/EditItem"
 import AddCategory from "./pages/Categories/AddCategory"
 import Categories from "./pages/Categories/Categories"
 import EditCategory from "./pages/Categories/EditCategory"
+import Charges from "./pages/Charges/Charges"
+import AddCharge from "./pages/Charges/AddCharge"
+import EditCharge from "./pages/Charges/EditCharge"
 
 function App() {
 
@@ -29,6 +32,11 @@ function App() {
         <Route path="/categories" element={<Categories />} />
         <Route path="/categories/add" element={<AddCategory />} />
         <Route path="/categories/:id" element={<EditCategory />} />
+        
+        {/* Charges routes */}
+        <Route path="/charges" element={<Charges />} />
+        <Route path="/charges/add" element={<AddCharge />} />
+        <Route path="/charges/:id" element={<EditCharge />} />
 
       </Routes>
     </Router>
