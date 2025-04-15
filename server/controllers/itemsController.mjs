@@ -93,11 +93,17 @@ export const getItemById = async (req, res) => {
     // Find the item by ID
     const item = await Item.findById(id);
 
+    
     if (!item) {
       return res.status(404).json({ message: "Item not found" });
     }
 
-    res.status(200).json(item);
+    const updatedItem = {
+      ...item,
+      imageUrl: item.imageUrl ? `${pubBucketURL}/${item.imageUrl.split('/').pop()}` : "", // Replace mainurl and bucket name with pubBucketURL
+    };
+
+    res.status(200).json(updatedItem);
   } catch (error) {
     console.error("Error fetching item by ID:", error);
     res.status(500).json({ message: "Failed to fetch item", error });

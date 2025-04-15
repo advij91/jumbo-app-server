@@ -12,6 +12,9 @@ import EditCategory from "./pages/Categories/EditCategory"
 import Charges from "./pages/Charges/Charges"
 import AddCharge from "./pages/Charges/AddCharge"
 import EditCharge from "./pages/Charges/EditCharge"
+import Coupon from "./pages/Coupons/Coupon"
+import EditCoupon from "./pages/Coupons/EditCoupon"
+import AddCoupon from "./pages/Coupons/AddCoupon"
 
 function App() {
 
@@ -39,6 +42,10 @@ function App() {
         <Route path="/charges/add" element={<AddCharge />} />
         <Route path="/charges/:id" element={<EditCharge />} />
 
+        {/* Coupon routes */}
+        <Route path="/coupons" element={<Coupon />} />
+        <Route path="/coupons/add" element={<AddCoupon />} />
+        <Route path="/coupons/:id" element={<EditCoupon />} />
       </Routes>
     </Router>
 

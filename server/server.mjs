@@ -20,6 +20,7 @@ import usersRoutes from "./routes/usersRoutes.mjs";
 import authRoutes from "./routes/authRoutes.mjs";
 import categoriesRoutes from "./routes/categoriesRoutes.mjs";
 import chargesRoutes from "./routes/chargesRoutes.mjs";
+import couponsRoutes from "./routes/couponsRoutes.mjs";
 // import itemUploadRoutes from "./routes/itemUploadRoutes.mjs"
 
 const app = express();
@@ -49,6 +50,7 @@ app.use("/api", customersRoutes);
 app.use("/api", usersRoutes);
 app.use("/api", categoriesRoutes)
 app.use("/api", chargesRoutes)
+app.use("/api", couponsRoutes);
 // app.use("/api", itemUploadRoutes);
 // Serve static files from the uploads folder
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));

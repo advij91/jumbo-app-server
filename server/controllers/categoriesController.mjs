@@ -1,7 +1,7 @@
 import Category from '../models/Category.mjs'; // Assuming you have a Category model
 import mongoose from 'mongoose';
 import { upload, uploadToR2 } from "../middleware/uploadService.mjs";
-import fs, { cp } from "fs";
+import fs from "fs";
 const pubBucketURL = "https://pub-07aefead65ab4b5a9a9a264d668eef65.r2.dev"
 
 // Helper function to convert strings to Pascal Case
