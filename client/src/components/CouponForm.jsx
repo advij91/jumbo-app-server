@@ -238,6 +238,7 @@ const CouponForm = ({ initialData = {}, onSubmit }) => {
         </div>
         {
           formData.couponConditions?.offerType === "discount" && (
+            <>
             <div className="flex items-center justify-between mb-2">
               <label className="block text-gray-700 font-bold mb-2">
                 Discount Type
@@ -266,6 +267,59 @@ const CouponForm = ({ initialData = {}, onSubmit }) => {
                 <option value="amount">Fixed Amount</option>
               </select>
             </div>
+            <div className="flex items-center justify-between mb-2">
+              <label className="block text-gray-700 font-bold mb-2">
+                Discount Value
+              </label>
+              <input
+                type="number"
+                name="discountValue"
+                value={formData.couponConditions?.discount?.value || ""}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    couponConditions: {
+                      ...formData.couponConditions,
+                      discount: {
+                        ...formData.couponConditions.discount,
+                        value: parseInt(e.target.value),
+                      },
+                    },
+                  })
+                }
+                className="border rounded px-3 py-2 mr-2 w-1/2"
+                placeholder="Discount Value"
+                min="0"
+                required
+              />
+            </div>
+            <div className="flex items-center justify-between mb-2">
+              <label className="block text-gray-700 font-bold mb-2">
+                Maximum Discount Amount
+              </label>
+              <input
+                type="number"
+                name="maxDiscountAmount"
+                value={formData.couponConditions?.discount?.maxDiscountAmount || ""}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    couponConditions: {
+                      ...formData.couponConditions,
+                      discount: {
+                        ...formData.couponConditions.discount,
+                        maxDiscountAmount: parseInt(e.target.value),
+                      },
+                    },
+                  })
+                }
+                className="border rounded px-3 py-2 mr-2 w-1/2"
+                placeholder="Max Discount Amount"
+                min="0"
+                required
+              />
+            </div>
+            </>
           )}
         {formData.couponConditions?.offerType === "removeCharge" && (
           <div className="flex items-center justify-between mb-2">
