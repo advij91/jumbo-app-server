@@ -91,7 +91,7 @@ export const getItemById = async (req, res) => {
     }
 
     // Find the item by ID
-    const item = await Item.findById(id);
+    const item = await Item.findById(id).lean();
 
     
     if (!item) {

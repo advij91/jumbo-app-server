@@ -7,8 +7,9 @@ const pubBucketURL = "https://pub-07aefead65ab4b5a9a9a264d668eef65.r2.dev"
 // Helper function to convert strings to Pascal Case
 const toPascalCase = (str) => {
     return str
-        .toLowerCase()
-        .replace(/(?:^|\s|_)(\w)/g, (_, c) => c.toUpperCase());
+        .replace(/[_-]/g, " ") // Replace underscores and hyphens with spaces
+        .toLowerCase() // Convert to lowercase
+        .replace(/\b\w/g, (c) => c.toUpperCase()); // Capitalize each word
 };
 
 // Create a new category
@@ -18,16 +19,15 @@ export const createCategory = [
     async (req, res) => {
         try {
             const { category, description, subCategory } = req.body;
-            console.log(req.body, req.file);
     
             // Validation
-            if (!/^[a-zA-Z]+$/.test(category) || !/^[a-zA-Z]+$/.test(subCategory)) {
-                return res.status(400).json({ error: 'Category and Sub-category names must contain only letters.' });
-            }
+            // if (!/^[a-zA-Z]+$/.test(category) || !/^[a-zA-Z]+$/.test(subCategory)) {
+            //     return res.status(400).json({ error: 'Category and Sub-category names must contain only letters.' });
+            // }
     
             // Convert names to Pascal Case
             const formattedCategory = toPascalCase(category);
-            const formattedSubCategory = toPascalCase(subCategory);
+            const formattedSubCategory = subCategory?.toPascalCase(subCategory);
     
             // Upload image to Cloudflare R2
             const imageUrl = await uploadToR2(req.file.path, req.file.filename);
@@ -108,12 +108,12 @@ export const updateCategory = [
             const file = req.file;
     
             // Validation
-            if (category && !/^[a-zA-Z]+$/.test(category)) {
-                return res.status(400).json({ error: 'Category name must contain only letters.' });
-            }
-            if (subCategory && !/^[a-zA-Z]+$/.test(subCategory)) {
-                return res.status(400).json({ error: 'Sub-category name must contain only letters.' });
-            }
+            // if (category && !/^[a-zA-Z]+$/.test(category)) {
+            //     return res.status(400).json({ error: 'Category name must contain only letters.' });
+            // }
+            // if (subCategory && !/^[a-zA-Z]+$/.test(subCategory)) {
+            //     return res.status(400).json({ error: 'Sub-category name must contain only letters.' });
+            // }
     
             const updateData = {};
             if (category) updateData.category = toPascalCase(category);

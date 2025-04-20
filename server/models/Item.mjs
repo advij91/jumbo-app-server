@@ -34,7 +34,7 @@ const itemSchema = new mongoose.Schema({
   },
   labels: {
     type: [String], // Array of strings
-    enum: ["bestseller", "new"], // Validates allowed values
+    enum: ["bestseller", "new", "musttry" ], // Validates allowed values
     default: undefined, // Makes labels optional
   },
   createdAt: {

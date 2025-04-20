@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
-import Header from "./components/Header"
+// import Header from "./components/Header"
+import Home from "./pages/Home"
 import Outlets from "./pages/Outlets/Outlets"
 import AddOutlet from "./pages/Outlets/AddOutlet"
 import EditOutlet from "./pages/Outlets/EditOutlet"
@@ -21,7 +22,7 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Header />} />
+        <Route path="/" element={<Home />} />
         {/* Outlet routes */}
         <Route path="/outlets" element={<Outlets />} />
         <Route path="/outlets/add" element={<AddOutlet />} />
