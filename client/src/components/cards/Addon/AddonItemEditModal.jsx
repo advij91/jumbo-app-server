@@ -6,6 +6,14 @@ const AddonItemEditModal = ({ onSubmit }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (!name.trim()) {
+      alert("Name is required");
+        return;
+    }
+    if (!price.trim()) {
+        alert("Price is required");
+        return;
+    }
     onSubmit({ name, price: parseFloat(price) });
   };
 

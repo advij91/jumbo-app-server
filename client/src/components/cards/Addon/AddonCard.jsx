@@ -1,17 +1,20 @@
 import React from "react";
-import SectionHeader from "../../../components/common/SectionHeader"
+import SectionHeader from "../../../components/common/SectionHeader";
 import AddonItemCard from "./AddonItemCard";
 import ApplicableItemCard from "./ApplicableItemCard";
 
 const AddonCard = ({ addon, onEdit, onDelete }) => {
   return (
-    <div className="mb-6 border-b pb-4">
+    <div className="mb-6 pb-4">
       <SectionHeader text={addon.name} />
       <div className="flex justify-between items-center">
-        <p className="text-3xl font-bold">
-          Category:{" "}
+        <p>
+          <span className="text-3xl font-bold">Category: </span>
           <span className="text-3xl font-bold text-primary">
             {addon.addonCategory}
+          </span>
+          <span className="ml-4 px-3 py-1 text-sm font-semibold text-white bg-green-600 rounded-full">
+            {addon.addonPreference}
           </span>
         </p>
       </div>

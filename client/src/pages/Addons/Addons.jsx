@@ -15,6 +15,8 @@ const Addons = () => {
     const fetchData = async () => {
       try {
         const response = await getAddons();
+        // Sort addon on the addonPreference field
+        response.data.sort((a, b) => a.addonPreference - b.addonPreference);
         setAddonData(response.data);
       } catch (error) {
         setError("Failed to fetch addons.");
@@ -24,7 +26,7 @@ const Addons = () => {
       }
     };
     fetchData();
-  }, []);
+  }, [addonData]);
 
   const handleNewAddon = () => {
     navigate("/addons/add");

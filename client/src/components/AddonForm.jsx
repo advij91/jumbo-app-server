@@ -12,6 +12,8 @@ const AddonForm = ({ initialData = {}, onSubmit, onCancel }) => {
   const [addonCategory, setAddonCategory] = useState(
     initialData.addonCategory || ""
   );
+  const [addonPreference, setAddonPreference] = useState(
+    initialData.addonPreference || 0);
   const [addonItems, setAddonItems] = useState(initialData.addonItems || []);
   const [applicableFor, setApplicableFor] = useState(
     initialData.applicableFor || []
@@ -23,19 +25,20 @@ const AddonForm = ({ initialData = {}, onSubmit, onCancel }) => {
   );
 
   const handleAddonItemAdd = (newItem) => {
-    setAddonItems([...addonItems, newItem]);
+    const itemWithDefaults = { ...newItem, isDefault: newItem.isDefault || false }; // Default isDefault to false
+    setAddonItems([...addonItems, itemWithDefaults]);
     setAddonItemModalOpen(false);
   };
 
-    const handleApplicableForAdd = (newItems) => {
-      setApplicableFor([...applicableFor, ...newItems]);
-      setApplicableForModalOpen(false);
-    };
+  const handleApplicableForAdd = (newItems) => {
+    setApplicableFor([...applicableFor, ...newItems]);
+    setApplicableForModalOpen(false);
+  };
 
-  const handleToggleDefault = (id) => {
+  const handleToggleDefault = (name) => {
     setAddonItems((prevItems) =>
       prevItems.map((item) => {
-        if (item._id === id) {
+        if (item.name === name) {
           // Toggle the selected item's default status
           return { ...item, isDefault: !item.isDefault };
         } else if (!isMultiAddonSelection && item.isDefault) {
@@ -48,20 +51,24 @@ const AddonForm = ({ initialData = {}, onSubmit, onCancel }) => {
   };
 
   const handleToggleMultiAddonSelection = (checked) => {
-    if (checked) {
-      setIsMultiAddonSelection(checked);
-    } else {
-      // If unchecking, ensure that exactly one item is set as default
-      // If there are no default items, do not allow unchecking and show alert Exactly one item should be set as default
-      // If there are multiple default items, do not allow unchecking and show alert
-      // If there is one default item, allow unchecking and set isMultiAddonSelection to false
-      const defaultItems = addonItems.filter((item) => item.isDefault);
-      if (defaultItems.length === 1) {
+    if (addonItems.length !== 0) {
+      if (checked) {
         setIsMultiAddonSelection(checked);
       } else {
-        alert("Exactly one item should be set as default");
-        setIsMultiAddonSelection(true); // Revert back to true
+        // If unchecking, ensure that exactly one item is set as default
+        // If there are no default items, do not allow unchecking and show alert Exactly one item should be set as default
+        // If there are multiple default items, do not allow unchecking and show alert
+        // If there is one default item, allow unchecking and set isMultiAddonSelection to false
+        const defaultItems = addonItems.filter((item) => item.isDefault);
+        if (defaultItems.length === 1) {
+          setIsMultiAddonSelection(checked);
+        } else {
+          alert("Exactly one item should be set as default");
+          setIsMultiAddonSelection(true); // Revert back to true
+        }
       }
+    } else {
+      setIsMultiAddonSelection(checked);
     }
   };
 
@@ -79,9 +86,20 @@ const AddonForm = ({ initialData = {}, onSubmit, onCancel }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    // Only allow submission if Allow Multople Addon Selection is checked and at least one item is set as default
+    if (!isMultiAddonSelection) {
+      const defaultItems = addonItems.filter((item) => item.isDefault);
+      if (defaultItems.length !== 1) {
+        alert(
+          "Exactly one item should be set as default when Allow Multiple Addon Selection is unchecked"
+        );
+        return;
+      }
+    }
     onSubmit({
       name,
       addonCategory,
+      addonPreference,
       addonItems,
       applicableFor,
       isMultiAddonSelection,
@@ -109,6 +127,16 @@ const AddonForm = ({ initialData = {}, onSubmit, onCancel }) => {
           type="text"
           value={addonCategory}
           onChange={(e) => setAddonCategory(e.target.value)}
+          className="w-full border rounded px-3 py-2"
+          required
+        />
+      </div>
+      <div className="mb-4">
+        <label className="block text-gray-700">Addon Preference</label>
+        <input
+          type="number"
+          value={addonPreference}
+          onChange={(e) => setAddonPreference(e.target.value)}
           className="w-full border rounded px-3 py-2"
           required
         />
@@ -157,7 +185,11 @@ const AddonForm = ({ initialData = {}, onSubmit, onCancel }) => {
         </button>
         <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
           {applicableFor.map((item) => (
-            <ApplicableForEditCard key={item._id}  item={item} onDelete={handleApplicableForDelete} />
+            <ApplicableForEditCard
+              key={item._id}
+              item={item}
+              onDelete={handleApplicableForDelete}
+            />
           ))}
         </div>
       </div>

@@ -35,6 +35,12 @@ const addonSchema = new mongoose.Schema(
             required: [true, "Addon category is required"],
             trim: true,
         },
+        addonPreference: {
+            type: Number,
+            required: [true, "Addon preference is required"],
+            min: [0, "Addon preference must be a positive number"],
+            max: [100, "Addon preference must be less than or equal to 100"],
+        },
         addonItems: {
             type: [addonItemsSchema], // Array of addon items
             validate: {

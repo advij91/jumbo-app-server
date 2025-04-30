@@ -3,7 +3,7 @@ import { FiTrash2 } from "react-icons/fi"; // Import trash icon
 
 const AddonItemEditCard = ({ item, isMultiAddonSelection, onToggleDefault, onDelete }) => {
   const handleToggle = () => {
-    onToggleDefault(item._id);
+    onToggleDefault(item.name);
   };
 
   const handleDelete = () => {

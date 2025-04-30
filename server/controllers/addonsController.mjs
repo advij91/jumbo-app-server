@@ -3,12 +3,13 @@ import Addon from "../models/Addon.mjs";
 // Create a new addon
 export const createAddon = async (req, res) => {
     try {
-        const { name, addonCategory, addonItems, isMultiAddonSelection, applicableFor } = req.body;
+        const { name, addonCategory, addonPreference, addonItems, isMultiAddonSelection, applicableFor } = req.body;
 
         // Create a new addon
         const newAddon = new Addon({
             name,
             addonCategory,
+            addonPreference,
             addonItems,
             isMultiAddonSelection,
             applicableFor,
