@@ -110,6 +110,35 @@ export const getCouponById = async (req, res) => {
   }
 };
 
+// Get live coupons
+export const getLiveCoupons = async (req, res) => {
+  try {
+    const currentDate = new Date();
+    const coupons = await Coupon.find({
+      startAt: { $lte: currentDate },
+      endAt: { $gte: currentDate },
+    }).lean();
+
+    if (!coupons || coupons.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "No live coupons found",
+      });
+    }
+
+    const updatedCoupons = coupons.map((coupon) => ({
+      ...coupon,
+      imageUrl: coupon.imageUrl
+        ? `${pubBucketURL}/${coupon.imageUrl.split("/").pop()}`
+        : "",
+    }));
+    res.status(200).json(updatedCoupons);
+  } catch (error) {
+    console.error("Error fetching live coupons:", error);
+    res.status(500).json({ message: "Failed to fetch live coupons", error });
+  }
+}
+
 // Update a coupon by ID
 export const updateCoupon = [
   upload.single("file"), // Middleware to handle file upload

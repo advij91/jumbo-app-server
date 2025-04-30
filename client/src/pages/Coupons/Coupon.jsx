@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { getCoupons, deleteCoupon } from "../../../services/couponsService.mjs";
+import { getCoupons, deleteCoupon } from "../../../services/couponsService";
 import Header from "../../components/Header";
 
 const Coupon = () => {
@@ -103,7 +103,7 @@ const Coupon = () => {
       <Header />
       <div className="min-h-screen bg-gray-100 p-6">
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl font-bold">Coupons</h1>
+          <h1 className="text-3xl font-bold text-primary mb-4">Coupons</h1>
           <button
             onClick={handleAddCoupon}
             className="bg-primary text-white px-4 py-2 rounded hover:bg-secondary transition"

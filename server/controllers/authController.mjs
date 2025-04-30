@@ -20,7 +20,7 @@ export const createUser = async (req, res) => {
             try {
                 await userPayload.save()
             } catch (error) {
-                return res.status(500).json({message: 'Error in creating th user', error})
+                return res.status(500).json({message: 'Error in creating the user', error})
             }
             res.status(200).json({otp, message: 'New user created and OTP generated'})
         }

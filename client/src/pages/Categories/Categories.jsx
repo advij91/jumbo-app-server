@@ -15,8 +15,8 @@ const Categories = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const categories = await getCategories();
-        setCategories(categories); // Handle the fetched categories as needed
+        const response = await getCategories();
+        setCategories(response); // Handle the fetched categories as needed
       } catch (error) {
         console.error("Error fetching categories:", error);
       }
@@ -51,12 +51,12 @@ const Categories = () => {
       <Header />
       <div className="min-h-screen bg-gray-100 p-6">
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl font-bold">Categories</h1>
+          <h1 className="text-3xl font-bold text-primary mb-4">Categories</h1>
           <button
             onClick={handleAddNewCategory}
             className="bg-primary text-white px-4 py-2 rounded hover:bg-secondary transition"
           >
-            Add New Item
+            Add New Category
           </button>
         </div>
         <CategoriesList

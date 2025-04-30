@@ -1,7 +1,7 @@
 import React from "react";
 import {useNavigate} from "react-router-dom";
 
-import { createCoupon } from "../../../services/couponsService.mjs";
+import { createCoupon } from "../../../services/couponsService";
 import Header from "../../components/Header";
 import CouponForm from "../../components/CouponForm";
 

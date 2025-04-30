@@ -16,6 +16,9 @@ import EditCharge from "./pages/Charges/EditCharge"
 import Coupon from "./pages/Coupons/Coupon"
 import EditCoupon from "./pages/Coupons/EditCoupon"
 import AddCoupon from "./pages/Coupons/AddCoupon"
+import Addons from "./pages/Addons/Addons"
+import EditAddon from "./pages/Addons/EditAddon"
+import AddAddon from "./pages/Addons/AddAddon"
 
 function App() {
 
@@ -47,6 +50,11 @@ function App() {
         <Route path="/coupons" element={<Coupon />} />
         <Route path="/coupons/add" element={<AddCoupon />} />
         <Route path="/coupons/:id" element={<EditCoupon />} />
+
+        {/* Addons routes */}
+        <Route path="/addons" element={<Addons />} />
+        <Route path="/addons/:id" element={<EditAddon />} />
+        <Route path="/addons/add" element={<AddAddon />} />
       </Routes>
     </Router>
 
