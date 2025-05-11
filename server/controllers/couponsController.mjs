@@ -65,7 +65,7 @@ export const getCoupons = async (req, res) => {
   try {
     const coupons = await Coupon.find().lean();
     if (!coupons || coupons.length === 0) {
-      return res.status(404).json({
+      return res.status(204).json({
         success: false,
         message: "No coupons found",
       });
@@ -120,8 +120,8 @@ export const getLiveCoupons = async (req, res) => {
     }).lean();
 
     if (!coupons || coupons.length === 0) {
-      return res.status(404).json({
-        success: false,
+      return res.status(204).json({
+        success: true,
         message: "No live coupons found",
       });
     }

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { io } from "socket.io-client";
 
-const Home = () => {
+const NewOrderAudioEnableButton = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [audioAllowed, setAudioAllowed] = useState(false); // User consent
   const audioRef = useRef(null);
@@ -81,4 +81,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default NewOrderAudioEnableButton;

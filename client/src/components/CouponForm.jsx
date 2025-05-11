@@ -32,18 +32,32 @@ const CouponForm = ({ initialData = {}, onSubmit }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+  
+    // Adjust startAt to the start of the day
+    const adjustedStartAt = formData.startAt
+      ? new Date(formData.startAt.setHours(0, 0, 0, 0))
+      : null;
+  
+    // Adjust endAt to the end of the day
+    const adjustedEndAt = formData.endAt
+      ? new Date(formData.endAt.setHours(23, 59, 59, 999))
+      : null;
+  
     const updatedData = new FormData();
     updatedData.append("code", formData.code);
     updatedData.append("description", formData.description);
     updatedData.append(
       "startAt",
-      formData.startAt ? formData.startAt.toISOString() : ""
+      adjustedStartAt ? adjustedStartAt.toISOString() : ""
     );
     updatedData.append(
       "endAt",
-      formData.endAt ? formData.endAt.toISOString() : ""
+      adjustedEndAt ? adjustedEndAt.toISOString() : ""
     );
-    updatedData.append("allowedFrequency", JSON.stringify(formData.allowedFrequency));
+    updatedData.append(
+      "allowedFrequency",
+      JSON.stringify(formData.allowedFrequency)
+    );
     updatedData.append(
       "couponConditions",
       JSON.stringify(formData.couponConditions)
@@ -100,6 +114,11 @@ const CouponForm = ({ initialData = {}, onSubmit }) => {
           onChange={(date) => setFormData({ ...formData, startAt: date })}
           dateFormat="yyyy-MM-dd"
           className="w-full border rounded px-3 py-2"
+          selectsStart
+          startDate={formData.startAt}
+          endDate={formData.endAt}
+          // showTimeSelect
+          timeFormat="HH:mm"
           required
         />
       </div>
@@ -110,6 +129,11 @@ const CouponForm = ({ initialData = {}, onSubmit }) => {
           onChange={(date) => setFormData({ ...formData, endAt: date })}
           dateFormat="yyyy-MM-dd"
           className="w-full border rounded px-3 py-2"
+          selectsEnd
+          startDate={formData.startAt}
+          endDate={formData.endAt}
+          // showTimeSelect
+          timeFormat="HH:mm"
           required
         />
       </div>

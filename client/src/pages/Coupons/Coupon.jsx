@@ -15,7 +15,9 @@ const Coupon = () => {
     const fetchCoupons = async () => {
       try {
         const data = await getCoupons();
-        const now = new Date();        
+        const now = new Date();
+        console.log("now: ", now);
+        console.log("data: ", data);        
         setLiveCoupons(data.filter(coupon => new Date(coupon.startAt) <= now && new Date(coupon.endAt) >= now));
         setUpcomingCoupons(data.filter(coupon => new Date(coupon.startAt) > now));
         setExpiredCoupons(data.filter(coupon => new Date(coupon.endAt) < now));

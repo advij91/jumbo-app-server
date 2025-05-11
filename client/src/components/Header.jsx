@@ -83,12 +83,20 @@ const Header = () => {
                                 Coupons
                             </a>
                         </li>
-                        <li>
+                        <li className='mb-2'>
                             <a
                                 href="/addons"
                                 className="text-secondary hover:text-primary transition-colors"
                             >
                                 Addons
+                            </a>
+                        </li>
+                        <li>
+                            <a
+                                href="/orders"
+                                className="text-secondary hover:text-primary transition-colors"
+                            >
+                                Orders
                             </a>
                         </li>
                     </ul>

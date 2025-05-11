@@ -19,6 +19,8 @@ import AddCoupon from "./pages/Coupons/AddCoupon"
 import Addons from "./pages/Addons/Addons"
 import EditAddon from "./pages/Addons/EditAddon"
 import AddAddon from "./pages/Addons/AddAddon"
+import Orders from "./pages/Orders/Orders"
+import AllOrders from "./pages/Orders/AllOrders"
 
 function App() {
 
@@ -55,6 +57,12 @@ function App() {
         <Route path="/addons" element={<Addons />} />
         <Route path="/addons/:id" element={<EditAddon />} />
         <Route path="/addons/add" element={<AddAddon />} />
+
+        {/* Orders Routs*/}
+        <Route path="/orders" element={<Orders />} />
+        <Route path="/orders/all" element={<AllOrders />} />
+        {/* Add more routes as needed */}
+
       </Routes>
     </Router>
 
