@@ -52,7 +52,7 @@ const Orders = () => {
     };
 
     fetchOrders();
-  }, [orders, date]);
+  }, [date]);
 
   useEffect(() => {
     const socket = io("http://localhost:5000");

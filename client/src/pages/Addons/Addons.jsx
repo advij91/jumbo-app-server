@@ -26,7 +26,7 @@ const Addons = () => {
       }
     };
     fetchData();
-  }, [addonData]);
+  }, []);
 
   const handleNewAddon = () => {
     navigate("/addons/add");

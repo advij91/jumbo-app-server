@@ -22,11 +22,16 @@ import couponsRoutes from "./routes/couponsRoutes.mjs";
 import addonsRoutes from "./routes/addonsRoutes.mjs";
 import ordersRoutes from "./routes/ordersRoutes.mjs";
 import mapsRoutes from "./routes/mapsRoutes.mjs";
+import waRoutes from "./routes/waRoutes.mjs";
 
 const app = express();
 
 app.use(cookieParser());
-app.use(cors());
+// CORS: allow credentials and set allowed origin for dev
+app.use(cors({
+  origin: 'http://localhost:5173',
+  credentials: true
+}));
 app.use(express.json());
 
 app.use("/auth", usersRoutes);
@@ -41,7 +46,8 @@ app.use("/api", chargesRoutes);
 app.use("/api", couponsRoutes);
 app.use("/api", addonsRoutes);
 app.use("/api", ordersRoutes);
-app.use("/maps", mapsRoutes)
+app.use("/maps", mapsRoutes);
+app.use("/api/whatsapp", waRoutes);
 
 // Serve static files
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
