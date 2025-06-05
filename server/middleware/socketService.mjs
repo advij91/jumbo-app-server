@@ -13,8 +13,13 @@ export const setupSocketIO = (server) => {
   io.on("connection", (socket) => {
     console.log("A client connected:", socket.id);
   
-    // Emit a test event to the client
-    // socket.emit("test-event", { message: "Socket.IO is working!" });
+    // Listen for the client to request joining their room
+    socket.on("join-user-room", (userContact) => {
+      if (userContact) {
+        socket.join(`user_${userContact}`);
+        console.log(`User ${userContact} joined room user_${userContact}`);
+      }
+    });
   
     socket.on("disconnect", () => {
       console.log("A client disconnected:", socket.id);

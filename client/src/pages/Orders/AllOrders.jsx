@@ -3,6 +3,7 @@ import { io } from "socket.io-client";
 import { getAllOrdersByDate } from "../../../services/ordersSerivce";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import {format} from "date-fns";
 import { FaEye } from "react-icons/fa";
 import Header from "../../components/Header";
 import OrderDetailsCard from "../../components/cards/order/OrderDetailsCard"; // Assuming you have a component to show order details
@@ -36,6 +37,12 @@ const AllOrders = () => {
           order.orderId === updatedOrder.orderId ? updatedOrder : order
         )
       );
+
+      setFilteredOrders((prevFilteredOrders) =>
+        prevFilteredOrders.map((order) =>
+          order.orderId === updatedOrder.orderId ? updatedOrder : order
+        )
+      );
     });
 
     return () => {
@@ -47,9 +54,10 @@ const AllOrders = () => {
     const fetchOrders = async () => {
       try {
         if (selectedDate) {
-          const formattedDate = selectedDate.toISOString().split("T")[0];
+          // Format the date to YYYY-MM-DD
+          const formattedDate = format(selectedDate, "yyyy-MM-dd");
           const data = await getAllOrdersByDate(formattedDate);
-          setOrders(data);
+          // setOrders(data);
           setFilteredOrders(data);
         }
       } catch (error) {
@@ -58,7 +66,7 @@ const AllOrders = () => {
     };
 
     fetchOrders();
-  }, [selectedDate, orders]);
+  }, [selectedDate]);
 
   const handleSearch = (e) => {
     const query = e.target.value.toLowerCase();
@@ -154,7 +162,7 @@ const AllOrders = () => {
               </tr>
             </thead>
             <tbody>
-              {filteredOrders.map((order) => (
+              {filteredOrders.length > 0 && filteredOrders.map((order) => (
                 <tr key={order._id} className="hover:bg-gray-50">
                   <td className="border border-gray-300 px-4 py-2">
                     {order.orderId}
@@ -199,7 +207,7 @@ const AllOrders = () => {
         {selectedOrder && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
             <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-              <OrderDetailsCard order={selectedOrder} />{" "}              
+              <OrderDetailsCard order={selectedOrder} onClose={() => setSelectedOrder(null)}/>{" "}              
               <button
                 className="mt-4 px-4 py-2 bg-primary text-white rounded-md"
                 onClick={() => setSelectedOrder(null)}

@@ -16,7 +16,7 @@ export const createUser = async (req, res) => {
     let user = await User.findOne({ contact });
     if (user) {
       const { otp } = generateOTP(user.otpSecret);
-      await sendVerificationCode(`91${contact}`, otp);
+      // await sendVerificationCode(`91${contact}`, otp);
       res.status(200).json({ otp, message: "OTP generated for existing user" });
     } else {
       const { otpSecret, otp } = generateOTP();

@@ -3,6 +3,7 @@ import {
   createOrder,
   getAllOrders,
   getAllOrdersByUserId,
+  getLiveOrderByUserId,
   getOrderById,
   updateOrder,
   deleteOrder,
@@ -10,19 +11,26 @@ import {
   getAllOrdersByDate
 } from "../controllers/ordersController.mjs";
 
+import { authenticate } from "../middleware/authenticate.mjs";
+import { authorize } from "../middleware/authorize.mjs";
+
 const router = express.Router();
 
 // Create a new order
 router.post("/orders", createOrder);
 
 // Get all orders
-router.get("/orders", getAllOrders);
+// Allow user with "View Orders" access to see all orders
+router.get("/orders", authenticate, authorize(["Admin"]), getAllOrders);
+
+// Get Live orders by userId
+router.get("/orders/live/:userId", getLiveOrderByUserId);
 
 // Get all orders by userId
 router.get("/orders/user/:userId", getAllOrdersByUserId);
 
 // Get all orders by date
-router.get("/orders/date/:date", getAllOrdersByDate);
+router.get("/orders/date/:date", authenticate, authorize(["Admin"]), getAllOrdersByDate);
 
 // Get a single order by ID
 router.get("/orders/:id", getOrderById);

@@ -34,7 +34,10 @@ const OrderFaceCard = ({ order }) => {
       </div>
 
       {/* Show Order Details on Toggle */}
-      {showOrderDetails && <OrderDetailsCard order={order} />}
+      {showOrderDetails && <OrderDetailsCard 
+      order={order} 
+      onClose={() => setShowOrderDetails(false)} 
+      />}
     </div>
   );
 };

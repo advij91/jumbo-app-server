@@ -64,7 +64,7 @@ function App() {
           {/* Outlet routes */}
           <Route path="/outlets" element={<Outlets />} />
           </Route>
-          <Route element={<ProtectedRoute requiredRoles={["Staff"]} requiredAccess={["Manage Inventory"]}/>}>
+          <Route element={<ProtectedRoute requiredRoles={["Admin"]} requiredAccess={["Manage Inventory"]}/>}>
           <Route path="/outlets/add" element={<AddOutlet />} />
           <Route path="/outlets/:id" element={<EditOutlet />} />
 
