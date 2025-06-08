@@ -16,7 +16,7 @@ export async function createOutlet(outletData){
 }
 
 export async function updateOutlet(id, outletData) {
-  const response = await axiosInstance.put(`/api/outlets/${id}`, outletData);
+  const response = await axiosInstance.patch(`/api/outlets/${id}`, outletData);
   return response.data;
 }
 

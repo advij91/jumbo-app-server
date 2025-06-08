@@ -1,31 +1,59 @@
 import mongoose from "mongoose";
-
 import { storeDB } from "../config/dbStore.mjs";
+
+const orderTypeSchema = new mongoose.Schema({
+  enabled: { type: Boolean, default: true }, // Is this order type allowed at all?
+  suspend: { type: Boolean, default: false }, // Temporarily suspend this order type
+  workingDays: {
+    type: [String], // e.g. ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+    default: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+  },
+  open: { type: String, default: "09:00" },  // Opening time (24h format)
+  close: { type: String, default: "22:00" }  // Closing time (24h format)
+}, { _id: false });
 
 const outletSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: true, // Mandatory field
+    required: true,
     trim: true,
   },
   address: {
     type: String,
-    required: true, // Mandatory field
+    required: true,
     trim: true,
+  },
+  location: {
+    type: {
+      type: String,
+      enum: ["Point"],
+      required: true,
+      default: "Point",
+    },
+    coordinates: {
+      type: [Number], // [longitude, latitude]
+      required: true,
+      validate: {
+        validator: function (v) {
+          return v.length === 2 && v.every((coord) => typeof coord === "number");
+        },
+        message: (props) => `${props.value} is not a valid coordinates array!`,
+      },
+    },
   },
   city: {
     type: String,
-    required: true, // Mandatory field
+    required: true,
     trim: true,
   },
   state: {
     type: String,
-    required: true, // Mandatory field
+    required: true,
     trim: true,
   },
   pin: {
     type: String,
-    required: true, // 6-digit PIN validation
+    required: true,
     validate: {
       validator: function (v) {
         return /^\d{6}$/.test(v);
@@ -35,7 +63,7 @@ const outletSchema = new mongoose.Schema({
   },
   contact: {
     type: String,
-    required: true, // 10-digit phone number
+    required: true,
     validate: {
       validator: function (v) {
         return /^\d{10}$/.test(v);
@@ -54,13 +82,23 @@ const outletSchema = new mongoose.Schema({
   },
   socialMedia: {
     type: new mongoose.Schema({
-      media: { type: String, trim: true }, // Social platform name
-      profileUrl: { type: String, trim: true }, // Profile URL
+      media: { type: String, trim: true },
+      profileUrl: { type: String, trim: true },
     }),
-    default: undefined, // Optional field
+    default: undefined,
   },
+    orderTypes: {
+    dineIn: { type: orderTypeSchema, default: () => ({}) },
+    takeAway: { type: orderTypeSchema, default: () => ({}) },
+    delivery: { type: orderTypeSchema, default: () => ({}) },
+    inCar: { type: orderTypeSchema, default: () => ({}) }
+  },
+  suspendAll: { type: Boolean, default: false }, // Suspend all operations for this outlet
 });
 
-const Outlet = storeDB.model('Outlet', outletSchema);
+// Add 2dsphere index for geospatial queries
+outletSchema.index({ location: "2dsphere" });
 
-export default Outlet
+const Outlet = storeDB.model("Outlet", outletSchema);
+
+export default Outlet;

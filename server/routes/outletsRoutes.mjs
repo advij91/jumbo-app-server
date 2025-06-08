@@ -19,7 +19,7 @@ router.get("/outlets/:id", getOutletById);
 router.post("/outlets", addOutlet);
 
 // Route to update an existing outlet
-router.put("/outlets/:id", updateOutlet);
+router.patch("/outlets/:id", updateOutlet);
 
 // Route to delete an outlet
 router.delete("/outlets/:id", deleteOutlet);

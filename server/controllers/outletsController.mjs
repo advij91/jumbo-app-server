@@ -7,7 +7,7 @@ export const getOutlets = async (req, res) => {
     return res.status(200).json(outlets);
   } catch (error) {
     console.error("Error fetching outlets:", error);
-    return res.status(500).json({ message: "Error fetching outlets", error });
+    return res.status(500).json({ message: "Error fetching outlets", error: error.message });
   }
 };
 
@@ -25,18 +25,19 @@ export const getOutletById = async (req, res) => {
     return res.status(200).json(outlet);
   } catch (error) {
     console.error("Error fetching outlet:", error);
-    return res.status(500).json({ message: "Error fetching outlet", error });
+    return res.status(500).json({ message: "Error fetching outlet", error: error.message });
   }
 };
 
 export const addOutlet = async (req, res) => {
   try {
-    const { name, address, city, state, pin, contact, alternateContact, socialMedia } = req.body;
+    const { name, address, location, city, state, pin, contact, alternateContact, socialMedia } = req.body;
 
     // Create a new outlet document
     const newOutlet = new Outlet({
       name,
       address,
+      location,
       city,
       state,
       pin,
@@ -50,7 +51,7 @@ export const addOutlet = async (req, res) => {
     return res.status(201).json({ message: "Outlet added successfully!", data: savedOutlet });
   } catch (error) {
     console.error("Error adding outlet:", error);
-    return res.status(500).json({ message: "Error adding outlet", error });
+    return res.status(500).json({ message: "Error adding outlet", error: error.message });
   }
 };
 
@@ -69,7 +70,7 @@ export const updateOutlet = async (req, res) => {
     return res.status(200).json({ message: "Outlet updated successfully!", data: updatedOutlet });
   } catch (error) {
     console.error("Error updating outlet:", error);
-    return res.status(500).json({ message: "Error updating outlet", error });
+    return res.status(500).json({ message: "Error updating outlet", error: error.message });
   }
 };
 
@@ -87,6 +88,6 @@ export const deleteOutlet = async (req, res) => {
     return res.status(200).json({ message: "Outlet deleted successfully!", data: deletedOutlet });
   } catch (error) {
     console.error("Error deleting outlet:", error);
-    return res.status(500).json({ message: "Error deleting outlet", error });
+    return res.status(500).json({ message: "Error deleting outlet", error: error.message });
   }
 };
