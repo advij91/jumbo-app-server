@@ -26,7 +26,7 @@ const authSlice = createSlice({
             state.loading = false;
             state.error = action.payload;
         },
-        userlogout: (state) => {
+        userLogout: (state) => {
             state.user = null;
             state.isAuthenticated = false;
             state.loading = false;
@@ -35,6 +35,6 @@ const authSlice = createSlice({
     },
 })
 
-export const { loginStart, loginSuccess, loginFailure, userlogout } = authSlice.actions;
+export const { loginStart, loginSuccess, loginFailure, userLogout } = authSlice.actions;
 export default authSlice.reducer;
 export const selectUser = (state) => state.auth.user;

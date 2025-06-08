@@ -1,4 +1,4 @@
-import { loginStart, loginSuccess, loginFailure, userlogout} from './authSlice'
+import { loginStart, loginSuccess, loginFailure, userLogout} from './authSlice'
 import {login, logout, getUserInfo} from '../../services/authService'
 
 export const loginThunk = (credentials) => async (dispatch) => {
@@ -16,7 +16,7 @@ export const loginThunk = (credentials) => async (dispatch) => {
 export const logoutThunk = () => async (dispatch) => {
     try {
         await logout();
-        dispatch(userlogout());
+        dispatch(userLogout());
     } catch (error) {
         console.error("Logout failed:", error);
     }
@@ -27,7 +27,7 @@ export const fetchUserFromToken = () => async (dispatch) => {
         const user = await getUserInfo();
         dispatch(loginSuccess({staff: user}));
     } catch (error) {
-        // dispatch(userlogout());
+        // dispatch(userLogout());
         console.error("Failed to fetch user info:", error);
     }
 }
