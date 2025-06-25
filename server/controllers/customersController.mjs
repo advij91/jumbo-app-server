@@ -110,6 +110,56 @@ export const updateCustomer = async (req, res) => {
   }
 };
 
+export const addCustomerAddress = async (req, res) => {
+  try {
+    const { id } = req.params; // Extract customer ID from request params
+    const { address } = req.body; // Get address data from request body
+
+    // Validate and set default values for the new address
+    const newAddress = {
+      ...address,
+      _id: address._id || new mongoose.Types.ObjectId(),
+      isDefault: address.isDefault || false,
+    };
+
+    const updatedCustomer = await Customer.findByIdAndUpdate(
+      id,
+      { $push: { addresses: newAddress } }, // Add new address to the addresses array
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedCustomer) {
+      return res.status(404).json({ message: "Customer not found" });
+    }
+
+    res.status(200).json({ message: "Address added successfully", data: updatedCustomer });
+  } catch (error) {
+    res.status(400).json({ message: "Error adding address", error });
+  }
+}
+
+// Update an existing customer address
+export const updateCustomerAddress = async (req, res) => {
+  try {
+    const { id, addressId } = req.params; // Extract customer ID and address ID from request params
+    const updatedAddressData = req.body; // Get updated address data from request body
+
+    const updatedCustomer = await Customer.findOneAndUpdate(
+      { _id: id, "addresses._id": addressId }, // Find customer and specific address
+      { $set: { "addresses.$": updatedAddressData } }, // Update the specific address
+      { new: true, runValidators: true } // Return the updated document
+    );
+
+    if (!updatedCustomer) {
+      return res.status(404).json({ message: "Customer or address not found" });
+    }
+
+    res.status(200).json({ message: "Address updated successfully", data: updatedCustomer });
+  } catch (error) {
+    res.status(400).json({ message: "Error updating address", error });
+  }
+};
+
 // Delete a customer by ID
 export const deleteCustomer = async (req, res) => {
   try {

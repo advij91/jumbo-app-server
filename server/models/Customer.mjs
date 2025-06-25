@@ -37,6 +37,24 @@ const addressSchema = new mongoose.Schema({
     required: true,
     match: [/^\d{6}$/, "Pin must be exactly 6 digits"], // Validate pin code
   },
+  location: {
+    type: {
+      type: String,
+      enum: ["Point"],
+      required: true,
+      default: "Point",
+    },
+    coordinates: {
+      type: [Number], // [longitude, latitude]
+      required: true,
+      validate: {
+        validator: function (v) {
+          return v.length === 2 && v.every((coord) => typeof coord === "number");
+        },
+        message: (props) => `${props.value} is not a valid coordinates array!`,
+      },
+    },
+  },
   isDefault: {
     type: Boolean,
     default: false,
