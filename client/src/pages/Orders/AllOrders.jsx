@@ -3,7 +3,7 @@ import { io } from "socket.io-client";
 import { getAllOrdersByDate } from "../../../services/ordersSerivce";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import {format} from "date-fns";
+import { format } from "date-fns";
 import { FaEye } from "react-icons/fa";
 import Header from "../../components/Header";
 import OrderDetailsCard from "../../components/cards/order/OrderDetailsCard"; // Assuming you have a component to show order details
@@ -162,43 +162,44 @@ const AllOrders = () => {
               </tr>
             </thead>
             <tbody>
-              {filteredOrders.length > 0 && filteredOrders.map((order) => (
-                <tr key={order._id} className="hover:bg-gray-50">
-                  <td className="border border-gray-300 px-4 py-2">
-                    {order.orderId}
-                  </td>
-                  <td className="border border-gray-300 px-4 py-2">
-                    {order.userName}
-                  </td>
-                  <td className="border border-gray-300 px-4 py-2">
-                    {order.userContact}
-                  </td>
-                  <td className="border border-gray-300 px-4 py-2 font-medium">
-                    <span
-                      className={`px-3 py-1 rounded text-xs ${
-                        statusColors[order.orderStatus]
-                      }`}
-                    >
-                      {order.orderStatus}
-                    </span>
-                  </td>
-                  <td className="border border-gray-300 px-4 py-2">
-                    {new Date(order.createdAt).toLocaleString()}
-                  </td>
-                  <td className="border border-gray-300 px-4 py-2">
-                    {new Date(order.updatedAt).toLocaleString()}
-                  </td>
-                  <td className="border border-gray-300 px-4 py-2 text-center">
-                    <button
-                      className="text-blue-500 hover:text-blue-700 transition"
-                      title="View Order Details"
-                      onClick={() => setSelectedOrder(order)}
-                    >
-                      <FaEye className="inline-block text-lg" />
-                    </button>
-                  </td>
-                </tr>
-              ))}
+              {filteredOrders.length > 0 &&
+                filteredOrders.map((order) => (
+                  <tr key={order._id} className="hover:bg-gray-50">
+                    <td className="border border-gray-300 px-4 py-2">
+                      {order.orderId}
+                    </td>
+                    <td className="border border-gray-300 px-4 py-2">
+                      {order.userName}
+                    </td>
+                    <td className="border border-gray-300 px-4 py-2">
+                      {order.userContact}
+                    </td>
+                    <td className="border border-gray-300 px-4 py-2 font-medium">
+                      <span
+                        className={`px-3 py-1 rounded text-xs ${
+                          statusColors[order.orderStatus]
+                        }`}
+                      >
+                        {order.orderStatus}
+                      </span>
+                    </td>
+                    <td className="border border-gray-300 px-4 py-2">
+                      {new Date(order.createdAt).toLocaleString()}
+                    </td>
+                    <td className="border border-gray-300 px-4 py-2">
+                      {new Date(order.updatedAt).toLocaleString()}
+                    </td>
+                    <td className="border border-gray-300 px-4 py-2 text-center">
+                      <button
+                        className="text-blue-500 hover:text-blue-700 transition"
+                        title="View Order Details"
+                        onClick={() => setSelectedOrder(order)}
+                      >
+                        <FaEye className="inline-block text-lg" />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
             </tbody>
           </table>
         </div>
@@ -207,7 +208,26 @@ const AllOrders = () => {
         {selectedOrder && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
             <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-              <OrderDetailsCard order={selectedOrder} onClose={() => setSelectedOrder(null)}/>{" "}              
+              <OrderDetailsCard
+                order={selectedOrder}
+                onClose={() => setSelectedOrder(null)}
+                onStatusUpdate={(orderId, newStatus) => {
+                  setOrders((prev) =>
+                    prev.map((order) =>
+                      order._id === orderId
+                        ? { ...order, orderStatus: newStatus }
+                        : order
+                    )
+                  );
+                  setFilteredOrders((prev) =>
+                    prev.map((order) =>
+                      order._id === orderId
+                        ? { ...order, orderStatus: newStatus }
+                        : order
+                    )
+                  );
+                }}
+              />{" "}
               <button
                 className="mt-4 px-4 py-2 bg-primary text-white rounded-md"
                 onClick={() => setSelectedOrder(null)}

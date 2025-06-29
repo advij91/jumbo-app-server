@@ -17,8 +17,7 @@ const orderSchema = new mongoose.Schema(
       required: true,
     },
     deliveryAddress: {
-      type: String,
-      required: true,
+      type: String, 
     },
     outletAddress: {
       type: String,
@@ -31,7 +30,7 @@ const orderSchema = new mongoose.Schema(
     },
     orderType: {
       type: String,
-      enum: ["delivery", "pickup"],
+      enum: ["delivery", "takeAway"],
       required: true,
     },
     orderStatus: {
@@ -43,6 +42,8 @@ const orderSchema = new mongoose.Schema(
         "Out for Delivery",
         "Delivered",
         "Cancelled",
+        "Completed",
+        "Rejected",
       ],
       default: "Pending",
     },

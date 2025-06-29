@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { getAllOrdersByDate } from "../../../services/ordersSerivce";
-import {format} from "date-fns";
+import { format } from "date-fns";
 import { io } from "socket.io-client";
 import { useNavigate } from "react-router-dom";
 import Header from "../../components/Header";
@@ -12,7 +12,7 @@ import NewOrderAudioEnableButton from "../../components/common/NewOrderAudioEnab
 const SOCKET_URL = "http://localhost:5000";
 
 const Orders = () => {
-  const [date] = useState(() => new Date())
+  const [date] = useState(() => new Date());
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -44,19 +44,24 @@ const Orders = () => {
   }, [date]);
 
   // Socket connection for real-time updates
-  // useEffect(() => {
-  //   const socket = io(SOCKET_URL, { transports: ["websocket"] });
-  //   socket.on("order-status-updated", (updatedOrder) => {
-  //     setOrders((prevOrders) =>
-  //       prevOrders.map((order) =>
-  //         order.orderId === updatedOrder.orderId ? updatedOrder : order
-  //       )
-  //     );
-  //   });
-  //   return () => {
-  //     socket.disconnect();
-  //   };
-  // }, []);
+  useEffect(() => {
+    const socket = io(SOCKET_URL, { transports: ["websocket"] });
+
+    socket.on("create-order", ({ order }) => {
+      setOrders((prevOrders) => [order, ...prevOrders]);
+    });
+
+    socket.on("order-status-updated", (updatedOrder) => {
+      setOrders((prevOrders) =>
+        prevOrders.map((order) =>
+          order.orderId === updatedOrder.orderId ? updatedOrder : order
+        )
+      );
+    });
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
 
   // Derive filtered order lists from orders state
   const ordersNeedAction = useMemo(

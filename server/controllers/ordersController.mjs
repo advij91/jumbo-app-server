@@ -12,14 +12,29 @@ const handleError = (res, error, statusCode = 500) => {
 // Create a new order
 export const createOrder = async (req, res) => {
   try {
+    const { orderType, deliveryAddress } = req.body;
+    // Delivery orders must have deliveryAddress
+    if (orderType === "delivery" && (!deliveryAddress || deliveryAddress.trim() === "")) {
+      return res.status(400).json({ error: "Delivery address is required for delivery orders." });
+    }
+
+    // TakeAway orders must NOT have deliveryAddress
+    if (orderType === "takeAway" && deliveryAddress && deliveryAddress.trim() !== "") {
+      return res.status(400).json({ error: "Delivery address should not be provided for take away orders." });
+    }
     const order = new Order(req.body);
     await order.save();
 
-    // Emit the order creation event
-    const io = getIO();
-    io.emit("create-order", { order });
+    // Fetch the saved order with all fields populated
+    const savedOrder = await Order.findById(order._id).lean();
 
-    res.status(201).json(order);
+    const io = getIO();
+    // Emit globally (for admin/web)
+    io.emit("create-order", { order: savedOrder });
+    // Emit to user-specific room
+    io.to(`user_${savedOrder.userContact}`).emit("create-order-user-update", { order: savedOrder });
+
+    res.status(201).json({ order: savedOrder });
   } catch (error) {
     handleError(res, error, 400);
   }
@@ -179,12 +194,10 @@ export const updateOrderStatus = async (req, res) => {
 
     // Emit the status update event
     const io = getIO();
-    io.emit("order-status-updated", { _id: id, orderStatus: status });
+    io.emit("order-status-updated", order);
 
-    io.to('user_' + order.userContact).emit('order-user-updates', {
-      _id: id,
-      orderStatus: status,
-    });
+    // Emit to the specific user
+    io.to(`user_${order.userContact}`).emit("order-user-updates", order);
 
     res.status(200).json({ message: "Order status updated", order });
   } catch (error) {

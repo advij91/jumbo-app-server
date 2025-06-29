@@ -20,26 +20,26 @@ const NewOrderAudioEnableButton = () => {
         setIsPlaying(true);
       }
 
-      const confirmOrder = window.confirm(
-        "New Order received. Do you want to confirm it?"
-      );
-      if (confirmOrder) {
-        console.log("Order confirmed:", data.orderId);
-        // Stop the sound if the order is confirmed
-        if (audioRef.current) {
-          audioRef.current.pause();
-          audioRef.current.currentTime = 0;
-          setIsPlaying(false);
-        }
-      } else {
-        console.log("Order rejected:", data.orderId);
-        // Stop the sound if the order is rejected
-        if (audioRef.current) {
-          audioRef.current.pause();
-          audioRef.current.currentTime = 0;
-          setIsPlaying(false);
-        }
-      }
+      // const confirmOrder = window.confirm(
+      //   "New Order received. Do you want to confirm it?"
+      // );
+      // if (confirmOrder) {
+      //   console.log("Order confirmed:", data.orderId);
+      //   // Stop the sound if the order is confirmed
+      //   if (audioRef.current) {
+      //     audioRef.current.pause();
+      //     audioRef.current.currentTime = 0;
+      //     setIsPlaying(false);
+      //   }
+      // } else {
+      //   console.log("Order rejected:", data.orderId);
+      //   // Stop the sound if the order is rejected
+      //   if (audioRef.current) {
+      //     audioRef.current.pause();
+      //     audioRef.current.currentTime = 0;
+      //     setIsPlaying(false);
+      //   }
+      // }
     });
 
     return () => {
