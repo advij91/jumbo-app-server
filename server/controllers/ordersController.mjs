@@ -1,4 +1,5 @@
 import Order from "../models/Order.mjs";
+import StaffUser from "../models/StaffUser.mjs"
 import { getIO } from "../middleware/socketService.mjs";
 
 // Utility function for error responses
@@ -202,5 +203,38 @@ export const updateOrderStatus = async (req, res) => {
     res.status(200).json({ message: "Order status updated", order });
   } catch (error) {
     handleError(res, error);
+  }
+};
+
+export const assignRiderToOrder = async (req, res) => {
+  try {
+    const { orderId } = req.params;
+    const { riderId } = req.body;
+
+    const order = await Order.findById(orderId);
+    if (!order) return res.status(404).json({ error: "Order not found" });
+
+    // Only allow for delivery orders and not for completed/cancelled/rejected
+    if (
+      order.orderType !== "delivery" ||
+      ["Delivered", "Cancelled", "Rejected"].includes(order.orderStatus)
+    ) {
+      return res.status(400).json({ error: "Cannot assign rider to this order" });
+    }
+
+    // Check that the rider belongs to the same outlet and is a Rider
+    const rider = await StaffUser.findOne({
+      _id: riderId,
+      outlets: order.outletId,
+      role: "Rider",
+    });
+    if (!rider) return res.status(400).json({ error: "Invalid rider for this outlet" });
+
+    order.deliveredBy = riderId;
+    await order.save();
+
+    res.status(200).json({ message: "Rider assigned", order });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 };

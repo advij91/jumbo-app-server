@@ -23,6 +23,7 @@ import addonsRoutes from "./routes/addonsRoutes.mjs";
 import ordersRoutes from "./routes/ordersRoutes.mjs";
 import mapsRoutes from "./routes/mapsRoutes.mjs";
 import waRoutes from "./routes/waRoutes.mjs";
+import staffUsersRoutes from "./routes/staffUsersRoutes.mjs";
 
 const app = express();
 
@@ -48,6 +49,7 @@ app.use("/api", addonsRoutes);
 app.use("/api", ordersRoutes);
 app.use("/maps", mapsRoutes);
 app.use("/api/whatsapp", waRoutes);
+app.use("/api", staffUsersRoutes);
 
 // Serve static files
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));

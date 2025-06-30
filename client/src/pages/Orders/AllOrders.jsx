@@ -1,45 +1,39 @@
 import React, { useState, useEffect } from "react";
 import { io } from "socket.io-client";
-import { getAllOrdersByDate } from "../../../services/ordersSerivce";
+import { getAllOrdersByDate } from "../../../services/ordersService";
+import { getOutlets } from "../../../services/outletService";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { format } from "date-fns";
 import { FaEye } from "react-icons/fa";
 import Header from "../../components/Header";
-import OrderDetailsCard from "../../components/cards/order/OrderDetailsCard"; // Assuming you have a component to show order details
+import OrderDetailsCard from "../../components/cards/order/OrderDetailsCard";
 
 const statusColors = {
   Pending: "bg-red-500 text-white animate-pulse",
   Confirmed: "bg-green-500 text-white",
   "Ready to Pickup": "bg-yellow-500 text-white",
   "Out for Delivery": "bg-purple-500 text-white",
-  Delivered: "bg-gray-400 text-white",
+  Delivered: "bg-blue-400 text-white",
+  Completed: "bg-blue-500 text-white",
 };
 
 const AllOrders = () => {
   const [orders, setOrders] = useState([]);
   const [filteredOrders, setFilteredOrders] = useState([]);
+  const [outlets, setOutlets] = useState([]);
+  const [selectedOutletId, setSelectedOutletId] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [filterBy, setFilterBy] = useState("userName");
   const [selectedDate, setSelectedDate] = useState(null);
-  const [selectedOrder, setSelectedOrder] = useState(null); // Stores selected order details
+  const [selectedOrder, setSelectedOrder] = useState(null);
 
   useEffect(() => {
     const socket = io("http://localhost:5000");
 
-    // Listen for socket messages
     socket.on("order-status-updated", (updatedOrder) => {
-      console.log("Order Status updated:", updatedOrder);
-
-      // Update the state with the new order data
       setOrders((prevOrders) =>
         prevOrders.map((order) =>
-          order.orderId === updatedOrder.orderId ? updatedOrder : order
-        )
-      );
-
-      setFilteredOrders((prevFilteredOrders) =>
-        prevFilteredOrders.map((order) =>
           order.orderId === updatedOrder.orderId ? updatedOrder : order
         )
       );
@@ -51,58 +45,90 @@ const AllOrders = () => {
   }, []);
 
   useEffect(() => {
+    async function fetchOutlets() {
+      const data = await getOutlets();
+      setOutlets(data);
+    }
+    fetchOutlets();
+  }, []);
+
+  useEffect(() => {
     const fetchOrders = async () => {
       try {
         if (selectedDate) {
-          // Format the date to YYYY-MM-DD
           const formattedDate = format(selectedDate, "yyyy-MM-dd");
           const data = await getAllOrdersByDate(formattedDate);
-          // setOrders(data);
-          setFilteredOrders(data);
+          setOrders(data); // Always set to orders
         }
       } catch (error) {
         console.error("Error fetching orders:", error);
       }
     };
-
     fetchOrders();
   }, [selectedDate]);
 
-  const handleSearch = (e) => {
-    const query = e.target.value.toLowerCase();
-    setSearchQuery(query);
+  // Unified filtering: outlet + search + filterBy
+  useEffect(() => {
+    let filtered = orders;
 
-    if (!query) {
-      setFilteredOrders(orders); // Reset to original data when search is empty
-      return;
+    if (selectedOutletId) {
+      filtered = filtered.filter((o) => o.outletId === selectedOutletId);
     }
 
-    const filtered = orders.filter((order) =>
-      order[filterBy]?.toLowerCase().includes(query)
-    );
+    if (searchQuery) {
+      filtered = filtered.filter((order) =>
+        order[filterBy]?.toLowerCase().includes(searchQuery)
+      );
+    }
 
     setFilteredOrders(filtered);
+  }, [orders, selectedOutletId, searchQuery, filterBy]);
+
+  const handleSearch = (e) => {
+    setSearchQuery(e.target.value.toLowerCase());
   };
 
   return (
     <>
-      <Header /> {/* Header component */}
+      <Header />
       <div className="p-6">
-        {/* Header with Date Filter */}
+        {/* Header with Date & Outlet Filter */}
         <div className="flex items-center mb-6">
           <h1 className="text-2xl font-semibold mr-6">All Orders</h1>
-          <DatePicker
-            selected={selectedDate}
-            onChange={(date) => setSelectedDate(date)}
-            dateFormat="yyyy-MM-dd"
-            className="border border-gray-300 rounded-md px-4 py-2"
-            placeholderText="Select a date"
-          />
+          <div className="flex gap-6 items-end">
+            <DatePicker
+              selected={selectedDate}
+              onChange={(date) => setSelectedDate(date)}
+              dateFormat="yyyy-MM-dd"
+              className="border border-gray-300 rounded-md px-4 py-2"
+              placeholderText="Select a date"
+            />
+            <div className="flex flex-col">
+              <label
+                htmlFor="outlet-select"
+                className="text-gray-700 font-medium mb-1 ml-1"
+              >
+                Filter by Outlet
+              </label>
+              <select
+                id="outlet-select"
+                value={selectedOutletId}
+                onChange={(e) => setSelectedOutletId(e.target.value)}
+                className="border border-gray-300 rounded-md px-4 py-2 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-primary transition w-56"
+              >
+                <option value="">All Outlets</option>
+                {outlets.map((outlet) => (
+                  <option key={outlet._id} value={outlet._id}>
+                    {outlet.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
         </div>
 
         {/* Search & Filter Section */}
         <div className="bg-light p-4 rounded-md flex gap-4">
-          {/* Search Input */}
           <div className="flex-1">
             <label htmlFor="search" className="text-gray-700 font-medium block">
               Search by{" "}
@@ -121,8 +147,6 @@ const AllOrders = () => {
               className="border border-gray-300 rounded-md px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
-
-          {/* Filter Dropdown */}
           <div className="w-1/3">
             <label
               htmlFor="filterBy"
@@ -204,7 +228,7 @@ const AllOrders = () => {
           </table>
         </div>
 
-        {/* Order Details Modal (Appears on Eye Icon Click) */}
+        {/* Order Details Modal */}
         {selectedOrder && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
             <div className="bg-white p-6 rounded-lg shadow-lg w-96">
@@ -219,15 +243,8 @@ const AllOrders = () => {
                         : order
                     )
                   );
-                  setFilteredOrders((prev) =>
-                    prev.map((order) =>
-                      order._id === orderId
-                        ? { ...order, orderStatus: newStatus }
-                        : order
-                    )
-                  );
                 }}
-              />{" "}
+              />
               <button
                 className="mt-4 px-4 py-2 bg-primary text-white rounded-md"
                 onClick={() => setSelectedOrder(null)}

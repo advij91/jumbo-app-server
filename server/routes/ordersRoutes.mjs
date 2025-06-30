@@ -8,7 +8,8 @@ import {
   updateOrder,
   deleteOrder,
   updateOrderStatus,
-  getAllOrdersByDate
+  getAllOrdersByDate,
+  assignRiderToOrder,
 } from "../controllers/ordersController.mjs";
 
 import { authenticate } from "../middleware/authenticate.mjs";
@@ -30,7 +31,12 @@ router.get("/orders/live/:userId", getLiveOrderByUserId);
 router.get("/orders/user/:userId", getAllOrdersByUserId);
 
 // Get all orders by date
-router.get("/orders/date/:date", authenticate, authorize(["Admin"]), getAllOrdersByDate);
+router.get(
+  "/orders/date/:date",
+  authenticate,
+  authorize(["Admin"]),
+  getAllOrdersByDate
+);
 
 // Get a single order by ID
 router.get("/orders/:id", getOrderById);
@@ -43,6 +49,13 @@ router.post("/orders/update-status/:id", updateOrderStatus);
 
 // Delete an order
 router.delete("/orders/:id", deleteOrder);
+
+router.post(
+  "/orders/:orderId/assign-rider",
+  authenticate,
+  authorize(["Admin", "Owner", "Manager"]),
+  assignRiderToOrder
+);
 
 // Webhook to notify clients about order status changes
 router.post("/webhook/order-status", updateOrderStatus);

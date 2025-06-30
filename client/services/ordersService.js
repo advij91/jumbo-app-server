@@ -19,3 +19,13 @@ export const updateOrderStatus = async (id, status) => {
   const response = await axiosInstance.post(`/api/orders/update-status/${id}`, { status });
   return response.data;
 }
+
+export const getRidersByOutletId = async (outletId) => {
+  const response = await axiosInstance.get(`/api/staff-users/riders/${outletId}`);
+  return response.data;
+}
+
+export const assignRiderToOrder = async (orderId, riderId) => {
+  const response = await axiosInstance.post(`/api/orders/${orderId}/assign-rider`, { riderId });
+  return response.data;
+}

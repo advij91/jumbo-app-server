@@ -47,6 +47,10 @@ const orderSchema = new mongoose.Schema(
       ],
       default: "Pending",
     },
+    deliveredBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Rider",
+    },
     orderItems: [
       {
         itemId: {

@@ -5,6 +5,8 @@ const staffUserSchema = new mongoose.Schema({
   staffid: {
     type: Number,
     required: true,
+    unique: true,
+    trim: true,
     validate: {
       validator: v => /^\d{6}$/.test(v),
       message: props => `${props.value} is not a valid 6-digit staff ID!`,
@@ -56,6 +58,8 @@ const staffUserSchema = new mongoose.Schema({
   contact: {
     type: String,
     required: true,
+    unique: true,
+    trim: true,
     validate: {
       validator: v => /^\d{10}$/.test(v),
       message: props => `${props.value} is not a valid 10-digit contact number!`,
@@ -70,6 +74,9 @@ const staffUserSchema = new mongoose.Schema({
   },
   email: {
     type: String,
+    required: true,
+    unique: true,
+    trim: true,
     validate: {
       validator: v => !v || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v),
       message: props => `${props.value} is not a valid email address!`,
