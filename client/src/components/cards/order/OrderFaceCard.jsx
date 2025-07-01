@@ -59,7 +59,9 @@ const OrderFaceCard = ({ order }) => {
       order.deliveredBy = selectedRider;
       setTimeout(() => setSuccess(false), 1500);
     } catch (e) {
-      // Optionally show error
+      console.error("Error assigning rider:", e);
+      // Optionally, show an error message to the user
+      alert("Failed to assign rider. Please try again.");
     } finally {
       setAssigning(false);
     }
