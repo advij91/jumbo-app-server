@@ -11,6 +11,7 @@ const server = http.createServer(app);
 setupSocketIO(server);
 
 // Start the server
-server.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+// Make sure you listen on 0.0.0.0, not just localhost
+server.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server running on port ${PORT}`);
 });
