@@ -40,7 +40,10 @@ app.use(cors({
   credentials: true
 }));
 
-app.use("/auth", usersRoutes);
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// app.use("/auth", usersRoutes);
 app.use("/auth", authRoutes);
 app.use("/api", itemsRoutes);
 app.use("/api", outletsRoutes);
