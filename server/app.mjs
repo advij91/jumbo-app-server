@@ -31,11 +31,10 @@ app.use(cookieParser());
 // CORS: allow credentials and set allowed origin for dev
 app.use(cors({
   origin: [
-    'http://localhost:5173', // local dev
-    'http://13.61.137.248',  // EC2 backend direct
-    'http://13.61.137.248:80', // EC2 backend with port (if needed)
-    // Add your deployed frontend domain here, e.g.:
-    // 'http://your-frontend-domain.com'
+    'http://localhost:5173',
+    'http://13.61.137.248',
+    'http://jumboapp.onvij.in',
+    'https://jumboapp.onvij.in'
   ],
   credentials: true
 }));

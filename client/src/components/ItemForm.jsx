@@ -55,25 +55,6 @@ const ItemForm = ({ item = {}, onSubmit }) => {
     e.preventDefault();
 
     const updatedData = new FormData(); // Use FormData for file upload
-    // updatedData.append("name", formData.name);
-    // updatedData.append("description", formData.description);
-    // updatedData.append(
-    //   "ingredients",
-    //   formData.ingredients.split(",").map((i) => i.trim())
-    // );
-    // updatedData.append("category", formData.category);
-    // updatedData.append(
-    //   "labels",
-    //   formData.labels.split(",").map((l) => l.trim())
-    // );
-    // updatedData.append("isVeg", formData.isVeg);
-    // updatedData.append(
-    //   "outletDetails",
-    //   JSON.stringify(formData.outletDetails) // Stringify outletDetails
-    // );
-    // if (formData.file) {
-    //   updatedData.append("file", formData.file); // Add the file to FormData
-    // }
     Object.entries(formData).forEach(([key, value]) => {
       updatedData.append(
         key,

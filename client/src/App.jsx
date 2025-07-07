@@ -33,6 +33,8 @@ function App() {
   const dispatch = useDispatch();
   const loading = useSelector((state) => state.auth.loading);
 
+  
+
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -45,12 +47,12 @@ function App() {
   }, [dispatch]);
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen text-xl bg-white">
-        Loading...
-      </div>
-    );
-  }
+  return (
+    <div className="flex items-center justify-center min-h-screen bg-white">
+      <span className="loader"></span>
+    </div>
+  );
+}
 
   return (
     <Router>
