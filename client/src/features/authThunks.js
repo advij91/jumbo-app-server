@@ -27,7 +27,7 @@ export const fetchUserFromToken = () => async (dispatch) => {
         const user = await getUserInfo();
         dispatch(loginSuccess({staff: user}));
     } catch (error) {
-        // dispatch(userLogout());
+        dispatch(userLogout());
         console.error("Failed to fetch user info:", error);
     }
 }
