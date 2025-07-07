@@ -10,7 +10,7 @@ const setTokens = ({ authToken, refreshToken }) => {
   const isLocalhost = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
   const cookieOptions = isLocalhost
     ? { secure: false, sameSite: "Lax", path: "/", expires: 7 }
-    : { secure: true, sameSite: "Strict", path: "/", expires: 7 };
+    : { secure: false, sameSite: "Lax", path: "/", expires: 7 };
   Cookies.set("authToken", authToken, cookieOptions);
   Cookies.set("refreshToken", refreshToken, cookieOptions);
 }
