@@ -3,7 +3,7 @@ import Cookies from 'js-cookie'
 
 const initialState = {
     user: null,
-    loading: false,
+    loading: true,
     error: null,
     isAuthenticated: !!Cookies.get('authToken'),
 }
