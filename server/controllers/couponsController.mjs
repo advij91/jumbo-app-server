@@ -1,4 +1,5 @@
 import Coupon from "../models/Coupon.mjs";
+import Order from "../models/Order.mjs"
 import mongoose from "mongoose";
 import { upload, uploadToR2 } from "../middleware/uploadService.mjs";
 import fs from "fs";
@@ -137,7 +138,7 @@ export const getLiveCoupons = async (req, res) => {
     console.error("Error fetching live coupons:", error);
     res.status(500).json({ message: "Failed to fetch live coupons", error });
   }
-}
+};
 
 // Update a coupon by ID
 export const updateCoupon = [
@@ -163,7 +164,9 @@ export const updateCoupon = [
         description: req.body.description || coupon.description,
         startAt: req.body.startAt || coupon.startAt,
         endAt: req.body.endAt || coupon.endAt,
-        allowedFrequency: JSON.parse(req.body.allowedFrequency || coupon.allowedFrequency),
+        allowedFrequency: JSON.parse(
+          req.body.allowedFrequency || coupon.allowedFrequency
+        ),
         couponConditions:
           JSON.parse(req.body.couponConditions) || coupon.couponConditions,
       };
@@ -216,4 +219,76 @@ export const deleteCoupon = async (req, res) => {
       error: error.message,
     });
   }
+};
+
+// Utility to get the start date for a given frequency type
+function getFrequencyStartDate(type) {
+  const now = new Date();
+  switch (type) {
+    case "hourly":
+      return new Date(now.getTime() - 60 * 60 * 1000);
+    case "daily":
+      return new Date(now.getTime() - 24 * 60 * 60 * 1000);
+    case "weekly": {
+      const day = now.getDay();
+      const diff = now.getDate() - day + (day === 0 ? -6 : 1); // adjust when day is sunday
+      return new Date(now.setDate(diff));
+    }
+    case "monthly":
+      return new Date(now.getFullYear(), now.getMonth(), 1);
+    case "yearly":
+      return new Date(now.getFullYear(), 0, 1);
+    default:
+      return null;
+  }
+}
+
+export const getCouponApplicability = async (req, res) => {
+  const { couponCode, user, cartValue, charges, items, orderType } = req.body;
+  if (!couponCode || !user || !cartValue || !charges || !items || !orderType) {
+    return res.status(400).json({ message: "Missing required fields" });
+  }
+
+  const coupon = await Coupon.findOne({
+    code: couponCode,
+    startAt: { $lte: new Date() },
+    endAt: { $gte: new Date() },
+  });
+  if (!coupon) {
+    return res.status(404).json({ message: "Coupon not found or expired" });
+  }
+
+  // Frequency check (fixed, hourly, daily, weekly, monthly, yearly)
+  const { type, limit } = coupon.allowedFrequency;
+  let usageCount = 0;
+  if (type === "fixed") {
+    usageCount = await Order.countDocuments({
+      userContact: user.loginId,
+      "discountDetails.couponCode": couponCode,
+    });
+  } else {
+    const startDate = getFrequencyStartDate(type);
+    if (startDate) {
+      usageCount = await Order.countDocuments({
+        userContact: user.loginId,
+        "discountDetails.couponCode": couponCode,
+        createdAt: { $gte: startDate },
+      });
+    }
+  }
+  if (usageCount >= limit) {
+    return res
+      .status(200)
+      .json({ success: false, message: "Coupon usage limit reached" });
+  }
+
+  // Add additional coupon condition checks here (min cart, orderType, etc.)
+  if (coupon.couponConditions.minCartAmount && cartValue < coupon.couponConditions.minCartAmount) {
+    return res.status(200).json({
+      success: false,
+      message: `Minimum cart value for this coupon is ${coupon.couponConditions.minCartAmount}`,
+    });
+  }
+
+  return res.status(200).json({ success: true, message: "Coupon is applicable", coupon });
 };

@@ -6,6 +6,7 @@ import {
     getLiveCoupons,
     updateCoupon,
     deleteCoupon,
+    getCouponApplicability,
 } from '../controllers/couponsController.mjs';
 
 const router = express.Router();
@@ -17,5 +18,6 @@ router.get('/coupons/live', getLiveCoupons); // Get live coupons //This needs to
 router.get('/coupons/:id', getCouponById);
 router.put('/coupons/:id', updateCoupon);
 router.delete('/coupons/:id', deleteCoupon);
+router.post('/coupons/check-applicability', getCouponApplicability);
 
 export default router;

@@ -91,6 +91,18 @@ const orderSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    discountDetails: {
+      couponCode: String,
+      couponId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Coupon",
+      },
+      discountType: {
+        type: String,
+        enum: ["percent", "amount"],
+      },
+      discountValue: Number,
+    },
     totalAmount: {
       type: Number,
       required: true,

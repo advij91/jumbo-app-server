@@ -2,18 +2,19 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { loginThunk } from "../../features/authThunks";
-import { selectUser } from "../../features/authSlice";
+import { selectUser, selectAuthError } from "../../features/authSlice";
 
 const Login = () => {
   const [staffid, setStaffid] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  // const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
   const user = useSelector(selectUser);
+  const error = useSelector(selectAuthError);
 
   useEffect(() => {
     if (user) {
@@ -25,20 +26,20 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
+    // setError("");
     setLoading(true);
-    if (staffid.length < 6) {
-      setError("Staff ID must be 6 digits long");
-      setLoading(false);
-      return;
-    }
+    // if (staffid.length < 6) {
+    //   setError("Staff ID must be 6 digits long");
+    //   setLoading(false);
+    //   return;
+    // }
     try {
       await dispatch(loginThunk({ staffid, password }));
       // Redirect to the page user was trying to access
       const from = location.state?.from?.pathname || "/";
       navigate(from, { replace: true });
     } catch (error) {
-      setError("Invalid Staff ID or Password");
+      // setError("Invalid Staff ID or Password");
       console.error("Login failed", error);
     }
     setLoading(false);
@@ -50,7 +51,13 @@ const Login = () => {
         <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">
           Staff Login
         </h2>
-        {error && <div className="text-red-500 text-center mb-4">{error}</div>}
+        {error && (
+          <div className="text-red-500 text-center mb-4">
+            {error === "Invalid credentials"
+              ? "Incorrect Staff ID or Password"
+              : error}
+          </div>
+        )}
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
             <label className="block text-gray-700 font-semibold mb-1">
