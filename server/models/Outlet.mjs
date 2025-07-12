@@ -94,6 +94,29 @@ const outletSchema = new mongoose.Schema({
     inCar: { type: orderTypeSchema, default: () => ({}) }
   },
   suspendAll: { type: Boolean, default: false }, // Suspend all operations for this outlet
+  deliveryRestrictions: {
+    allowedPinCodes: {
+      type: [String],
+      validate: {
+        validator: function (v) {
+          return v.every(pin => /^\d{6}$/.test(pin));
+        },
+        message: (props) => `${props.value} contains invalid PIN codes!`
+      },
+      default: []
+    },
+    deliveryRadiusInKm: {
+      type: Number,
+      min: 0,
+      default: 5, // Default delivery radius in kilometers
+      validate: {
+        validator: function (v) {
+          return v >= 0;
+        },
+        message: (props) => `Delivery radius must be a non-negative number!`
+      }
+    }
+  }
 });
 
 // Add 2dsphere index for geospatial queries

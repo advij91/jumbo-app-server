@@ -10,10 +10,11 @@ const OutletCard = ({ outlet, onDelete, onOperationsUpdate }) => {
     navigate(`/outlets/${outlet._id}`);
   };
 
-  const handleOperationsUpdate = async (updatedOrderTypes) => {
+  const handleOperationsUpdate = async (updatedOrderTypes, updatedDeliveryRestrictions) => {
     try {
       const updatedOutlet = await updateOutlet(outlet._id, {
         orderTypes: updatedOrderTypes,
+        deliveryRestrictions: updatedDeliveryRestrictions
       });
       onOperationsUpdate(updatedOutlet);
     } catch (error) {

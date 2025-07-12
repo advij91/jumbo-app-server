@@ -9,10 +9,19 @@ const ORDER_TYPE_LABELS = {
 
 const WEEK_DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
-export default function OutletOperationsForm({ initialOrderTypes, onSave, onCancel }) {
+export default function OutletOperationsForm({
+  initialOrderTypes,
+  initialDeliveryRestrictions = {},
+  onSave,
+  onCancel,
+}) {
   const [orderTypes, setOrderTypes] = useState(
     JSON.parse(JSON.stringify(initialOrderTypes))
   );
+  const [deliveryRestrictions, setDeliveryRestrictions] = useState({
+    allowedPinCodes: initialDeliveryRestrictions.allowedPinCodes?.join(",") || "",
+    deliveryRadiusInKm: initialDeliveryRestrictions.deliveryRadiusInKm || 5,
+  });
 
   const handleDayToggle = (type, day) => {
     setOrderTypes((prev) => {
@@ -48,9 +57,23 @@ export default function OutletOperationsForm({ initialOrderTypes, onSave, onCanc
     }));
   };
 
+  const handleDeliveryRestrictionsChange = (e) => {
+    const { name, value } = e.target;
+    setDeliveryRestrictions((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSave(orderTypes);
+    onSave(orderTypes, {
+      allowedPinCodes: deliveryRestrictions.allowedPinCodes
+        .split(",")
+        .map((p) => p.trim())
+        .filter((p) => /^\d{6}$/.test(p)),
+      deliveryRadiusInKm: Number(deliveryRestrictions.deliveryRadiusInKm),
+  });
   };
 
   return (
@@ -58,7 +81,9 @@ export default function OutletOperationsForm({ initialOrderTypes, onSave, onCanc
       {Object.entries(orderTypes).map(([type, config]) => (
         <div key={type} className="border-b pb-4 last:border-b-0">
           <div className="flex items-center gap-2 mb-2">
-            <span className="font-semibold text-primary">{ORDER_TYPE_LABELS[type] || type}</span>
+            <span className="font-semibold text-primary">
+              {ORDER_TYPE_LABELS[type] || type}
+            </span>
             <label className="flex items-center gap-1 text-xs">
               <input
                 type="checkbox"
@@ -119,6 +144,39 @@ export default function OutletOperationsForm({ initialOrderTypes, onSave, onCanc
               />
             </label>
           </div>
+          {type === "delivery" && (
+            <div className="border-t pt-4 mt-4">
+              <h4 className="font-semibold text-primary mb-2">
+                Delivery Restrictions
+              </h4>
+              <div className="mb-3">
+                <label className="block text-gray-700 font-bold mb-1">
+                  Allowed Pin Codes (comma separated)
+                </label>
+                <input
+                  type="text"
+                  name="allowedPinCodes"
+                  value={deliveryRestrictions.allowedPinCodes}
+                  onChange={handleDeliveryRestrictionsChange}
+                  placeholder="e.g. 560001,560002"
+                  className="border rounded px-3 py-2 w-full"
+                />
+              </div>
+              <div className="mb-3">
+                <label className="block text-gray-700 font-bold mb-1">
+                  Delivery Radius (km)
+                </label>
+                <input
+                  type="number"
+                  name="deliveryRadiusInKm"
+                  value={deliveryRestrictions.deliveryRadiusInKm}
+                  onChange={handleDeliveryRestrictionsChange}
+                  min={0}
+                  className="border rounded px-3 py-2 w-full"
+                />
+              </div>
+            </div>
+          )}
         </div>
       ))}
       <div className="flex justify-end gap-2 pt-2">

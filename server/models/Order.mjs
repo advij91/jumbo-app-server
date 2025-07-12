@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-
 import { storeDB } from "../config/dbStore.mjs";
 
 const orderSchema = new mongoose.Schema(
@@ -17,7 +16,7 @@ const orderSchema = new mongoose.Schema(
       required: true,
     },
     deliveryAddress: {
-      type: String, 
+      type: String,
     },
     outletAddress: {
       type: String,
@@ -51,6 +50,14 @@ const orderSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Rider",
     },
+    distanceInKms: {
+      type: Number,
+    },
+    orderCompletionTimeInMinutes: {
+      riderTime: { type: Number },
+      prepTime: { type: Number },
+      otherTime: { type: Number },
+    },
     orderItems: [
       {
         itemId: {
@@ -66,8 +73,14 @@ const orderSchema = new mongoose.Schema(
           type: Number,
           required: true,
         },
-        quantity: { type: Number, required: true },
-        totalItemPrice: { type: Number, required: true },
+        quantity: {
+          type: Number,
+          required: true,
+        },
+        totalItemPrice: {
+          type: Number,
+          required: true,
+        },
         addons: [
           {
             category: String,
@@ -117,7 +130,9 @@ const orderSchema = new mongoose.Schema(
 
 orderSchema.pre("save", async function (next) {
   if (this.isNew) {
-    const lastOrder = await storeDB.model("Order").findOne({}, {}, { sort: { orderId: -1 } });
+    const lastOrder = await storeDB
+      .model("Order")
+      .findOne({}, {}, { sort: { orderId: -1 } });
     this.orderId = lastOrder ? lastOrder.orderId + 1 : 1;
   }
   next();

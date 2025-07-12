@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import OutletOperationsForm from "../../OutletOperationsForm";
 import Modal from "../../common/Modal";
-import { updateOutlet } from "../../../../services/outletService";
 
 const ORDER_TYPE_LABELS = {
   dineIn: "Dine-In",
@@ -15,18 +14,20 @@ const WEEK_DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 export default function OutletOperationsCard({ outlet, onOperationsUpdate }) {
   const [showModal, setShowModal] = useState(false);
   const [localOrderTypes, setLocalOrderTypes] = useState(outlet.orderTypes);
+  const [localDeliveryRestrictions, setLocalDeliveryRestrictions] = useState(outlet.deliveryRestrictions);
 
   if (!outlet) return null;
 
   const { suspendAll } = outlet;
 
   // Handler for saving changes
-  const handleSave = async (updatedOrderTypes) => {
+  const handleSave = async (updatedOrderTypes, updatedDeliveryRestrictions) => {
     setShowModal(false);
     setLocalOrderTypes(updatedOrderTypes);
+    setLocalDeliveryRestrictions(updatedDeliveryRestrictions);
     // Call parent handler to update in DB or parent state
     if (onOperationsUpdate) {
-      await onOperationsUpdate(updatedOrderTypes);
+      await onOperationsUpdate(updatedOrderTypes, updatedDeliveryRestrictions);
     }
   };
 
@@ -86,6 +87,23 @@ export default function OutletOperationsCard({ outlet, onOperationsUpdate }) {
                     </div>
                   </>
                 )}
+                {type === "delivery" && localDeliveryRestrictions && (
+                  <div className="mt-4 p-3 bg-gray-50 rounded border border-gray-200">
+                    <h4 className="font-semibold text-primary mb-2">Delivery Restrictions</h4>
+                    <div className="text-sm text-gray-700">
+                      <span className="font-semibold">Allowed Pin Codes:</span>{" "}
+                      {localDeliveryRestrictions.allowedPinCodes?.length
+                        ? localDeliveryRestrictions.allowedPinCodes.join(", ")
+                        : <span className="text-gray-400">None</span>}
+                    </div>
+                    <div className="text-sm text-gray-700 mt-1">
+                      <span className="font-semibold">Delivery Radius:</span>{" "}
+                      {localDeliveryRestrictions.deliveryRadiusInKm
+                        ? `${localDeliveryRestrictions.deliveryRadiusInKm} km`
+                        : <span className="text-gray-400">Not set</span>}
+                    </div>
+                  </div>
+                )}
               </div>
             ))}
           </div>
@@ -98,6 +116,7 @@ export default function OutletOperationsCard({ outlet, onOperationsUpdate }) {
       >
         <OutletOperationsForm
           initialOrderTypes={localOrderTypes}
+          initialDeliveryRestrictions={localDeliveryRestrictions}
           onSave={handleSave}
           onCancel={() => setShowModal(false)}
         />
