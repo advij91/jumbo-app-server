@@ -53,10 +53,13 @@ const orderSchema = new mongoose.Schema(
     distanceInKms: {
       type: Number,
     },
-    orderCompletionTimeInMinutes: {
-      riderTime: { type: Number },
-      prepTime: { type: Number },
-      otherTime: { type: Number },
+    distanceInMinutes: {
+      type: Number,
+    },
+    orderETAInMinutes: {
+      riderTime: { type: Number, default: 0 },
+      prepTime: { type: Number, default: 0 },
+      otherTime: { type: Number, default: 0 },
     },
     orderItems: [
       {

@@ -93,6 +93,10 @@ const outletSchema = new mongoose.Schema({
     delivery: { type: orderTypeSchema, default: () => ({}) },
     inCar: { type: orderTypeSchema, default: () => ({}) }
   },
+  orderETAInMinutes: {
+      prepTime: { type: Number, default: 20 },
+      otherTime: { type: Number, default: 0 },
+    },
   suspendAll: { type: Boolean, default: false }, // Suspend all operations for this outlet
   deliveryRestrictions: {
     allowedPinCodes: {

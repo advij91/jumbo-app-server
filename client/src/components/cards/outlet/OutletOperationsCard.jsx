@@ -14,20 +14,39 @@ const WEEK_DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 export default function OutletOperationsCard({ outlet, onOperationsUpdate }) {
   const [showModal, setShowModal] = useState(false);
   const [localOrderTypes, setLocalOrderTypes] = useState(outlet.orderTypes);
-  const [localDeliveryRestrictions, setLocalDeliveryRestrictions] = useState(outlet.deliveryRestrictions);
+  const [localDeliveryRestrictions, setLocalDeliveryRestrictions] = useState(
+    outlet.deliveryRestrictions
+  );
+  const [localETAInMinutes, setLocalETAInMinutes] = useState(
+    outlet?.orderETAInMinutes && typeof outlet.orderETAInMinutes === "object"
+      ? {
+          prepTime: outlet.orderETAInMinutes.prepTime ?? 20,
+          otherTime: outlet.orderETAInMinutes.otherTime ?? 0,
+        }
+      : { prepTime: 20, otherTime: 0 }
+  );
 
   if (!outlet) return null;
 
   const { suspendAll } = outlet;
 
   // Handler for saving changes
-  const handleSave = async (updatedOrderTypes, updatedDeliveryRestrictions) => {
+  const handleSave = async (
+    updatedOrderTypes,
+    updatedDeliveryRestrictions,
+    updatedETAInMinutes
+  ) => {
     setShowModal(false);
     setLocalOrderTypes(updatedOrderTypes);
     setLocalDeliveryRestrictions(updatedDeliveryRestrictions);
+    setLocalETAInMinutes(updatedETAInMinutes);
     // Call parent handler to update in DB or parent state
     if (onOperationsUpdate) {
-      await onOperationsUpdate(updatedOrderTypes, updatedDeliveryRestrictions);
+      await onOperationsUpdate(
+        updatedOrderTypes,
+        updatedDeliveryRestrictions,
+        updatedETAInMinutes
+      );
     }
   };
 
@@ -35,7 +54,9 @@ export default function OutletOperationsCard({ outlet, onOperationsUpdate }) {
     <>
       <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mt-4 shadow-sm">
         <div className="flex justify-between items-center mb-3">
-          <h3 className="text-lg font-semibold text-primary">Outlet Operations</h3>
+          <h3 className="text-lg font-semibold text-primary">
+            Outlet Operations
+          </h3>
           <button
             className="bg-primary text-white px-4 py-1 rounded hover:bg-secondary text-sm"
             onClick={() => setShowModal(true)}
@@ -44,16 +65,32 @@ export default function OutletOperationsCard({ outlet, onOperationsUpdate }) {
           </button>
         </div>
         {suspendAll ? (
-          <div className="text-red-600 font-bold mb-2">All operations suspended</div>
+          <div className="text-red-600 font-bold mb-2">
+            All operations suspended
+          </div>
         ) : (
           <div className="space-y-4">
+            <div>
+              <div className="flex gap-6 items-center mb-2">
+                <span className="font-semibold text-gray-700">Prep Time:</span>
+                <span className="bg-gray-200 px-2 py-0.5 rounded text-sm">
+                  {localETAInMinutes?.prepTime ?? 0} min
+                </span>
+                <span className="font-semibold text-gray-700">Other Time:</span>
+                <span className="bg-gray-200 px-2 py-0.5 rounded text-sm">
+                  {localETAInMinutes?.otherTime ?? 0} min
+                </span>
+              </div>
+            </div>
             {Object.entries(localOrderTypes).map(([type, config]) => (
               <div
                 key={type}
                 className="border-b border-gray-200 pb-2 last:border-b-0"
               >
                 <div className="flex items-center gap-2 mb-1">
-                  <span className="font-medium text-gray-700">{ORDER_TYPE_LABELS[type] || type}:</span>
+                  <span className="font-medium text-gray-700">
+                    {ORDER_TYPE_LABELS[type] || type}:
+                  </span>
                   {config?.enabled === false ? (
                     <span className="text-gray-400 ml-2">Disabled</span>
                   ) : config?.suspend ? (
@@ -89,18 +126,24 @@ export default function OutletOperationsCard({ outlet, onOperationsUpdate }) {
                 )}
                 {type === "delivery" && localDeliveryRestrictions && (
                   <div className="mt-4 p-3 bg-gray-50 rounded border border-gray-200">
-                    <h4 className="font-semibold text-primary mb-2">Delivery Restrictions</h4>
+                    <h4 className="font-semibold text-primary mb-2">
+                      Delivery Restrictions
+                    </h4>
                     <div className="text-sm text-gray-700">
                       <span className="font-semibold">Allowed Pin Codes:</span>{" "}
-                      {localDeliveryRestrictions.allowedPinCodes?.length
-                        ? localDeliveryRestrictions.allowedPinCodes.join(", ")
-                        : <span className="text-gray-400">None</span>}
+                      {localDeliveryRestrictions.allowedPinCodes?.length ? (
+                        localDeliveryRestrictions.allowedPinCodes.join(", ")
+                      ) : (
+                        <span className="text-gray-400">None</span>
+                      )}
                     </div>
                     <div className="text-sm text-gray-700 mt-1">
                       <span className="font-semibold">Delivery Radius:</span>{" "}
-                      {localDeliveryRestrictions.deliveryRadiusInKm
-                        ? `${localDeliveryRestrictions.deliveryRadiusInKm} km`
-                        : <span className="text-gray-400">Not set</span>}
+                      {localDeliveryRestrictions.deliveryRadiusInKm ? (
+                        `${localDeliveryRestrictions.deliveryRadiusInKm} km`
+                      ) : (
+                        <span className="text-gray-400">Not set</span>
+                      )}
                     </div>
                   </div>
                 )}
@@ -117,6 +160,7 @@ export default function OutletOperationsCard({ outlet, onOperationsUpdate }) {
         <OutletOperationsForm
           initialOrderTypes={localOrderTypes}
           initialDeliveryRestrictions={localDeliveryRestrictions}
+          initialETAInMinutes={localETAInMinutes}
           onSave={handleSave}
           onCancel={() => setShowModal(false)}
         />
