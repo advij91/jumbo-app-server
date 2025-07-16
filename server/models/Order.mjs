@@ -53,7 +53,7 @@ const orderSchema = new mongoose.Schema(
     distanceInKms: {
       type: Number,
     },
-    distanceInMinutes: {
+    travelTimeInMinutes: {
       type: Number,
     },
     orderETAInMinutes: {
